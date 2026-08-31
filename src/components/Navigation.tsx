@@ -87,6 +87,9 @@ export default function Navigation() {
 
             <div className={styles.menuSection}>
               <p className={styles.sectionLabel}>Account</p>
+              <Link href="/profile" className={styles.menuItem} onClick={() => setIsOpen(false)}>
+                Profile
+              </Link>
               <Link href="/signin" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                 Sign In
               </Link>
