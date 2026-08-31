@@ -1,14 +1,29 @@
 'use server';
 
+import { headers } from 'next/headers';
 import { PrismaClient } from '@prisma/client';
 import { PredictorInput, validatePredictorInput } from '../predictor/schema';
 import { estimateFinishTime, validateEstimate } from '../predictor/estimator';
+import { validateRateLimit } from '../ratelimit';
 
 const prisma = new PrismaClient();
 
 // Server action: validate input, estimate, and persist prediction [T-08]
 export async function createPrediction(input: unknown) {
   try {
+    // Check rate limits [T-09, US-01 criterion 5]
+    const requestHeaders = await headers();
+    const rateLimit = validateRateLimit(requestHeaders);
+
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        errors: {
+          _form: `Rate limit exceeded. Please try again in ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds.`,
+        },
+      };
+    }
+
     // Validate input [T-06, US-01 criterion 2]
     const validation = validatePredictorInput(input);
     if (!validation.valid) {

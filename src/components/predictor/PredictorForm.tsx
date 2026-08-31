@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPrediction } from '@/src/lib/actions/predict';
+import { validatePredictorInput } from '@/src/lib/predictor/schema';
+import { estimateFinishTime } from '@/src/lib/predictor/estimator';
 import { PredictorResult } from './PredictorResult';
 import styles from './form.module.css';
 
@@ -9,6 +11,7 @@ interface FormState {
   loading: boolean;
   errors: Record<string, string>;
   result?: any;
+  liveEstimate?: any;
 }
 
 export function PredictorForm() {
@@ -16,6 +19,7 @@ export function PredictorForm() {
     loading: false,
     errors: {},
   });
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const [formData, setFormData] = useState({
     age: 35,
@@ -50,6 +54,60 @@ export function PredictorForm() {
         [name]: '',
       },
     }));
+
+    // Live recalculation on input change [T-10]
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      setFormData((currentData) => {
+        const competitionDate = new Date();
+        competitionDate.setDate(competitionDate.getDate() + currentData.competitionDateDays);
+
+        const fiveKmTimeSeconds = currentData.fiveKmTimeMinutes * 60 + currentData.fiveKmTimeSeconds;
+
+        const input = {
+          age: currentData.age,
+          category: currentData.category,
+          division: currentData.division,
+          fiveKmTimeSeconds,
+          fiveKmRecency: currentData.fiveKmRecency,
+          weightValue: currentData.weightValue,
+          weightUnit: currentData.weightUnit,
+          competitionDate: competitionDate.toISOString(),
+          targetFinishTimeSeconds: currentData.targetTimeMinutes || currentData.targetTimeSeconds
+            ? parseInt(currentData.targetTimeMinutes || '0', 10) * 60 +
+              parseInt(currentData.targetTimeSeconds || '0', 10)
+            : undefined,
+          priorHyroxResult: currentData.priorHyroxResult,
+        };
+
+        // Validate input
+        const validation = validatePredictorInput(input);
+        if (validation.valid && validation.data) {
+          try {
+            // Run estimator live [T-10]
+            const estimate = estimateFinishTime(validation.data);
+            setState((prev) => ({
+              ...prev,
+              liveEstimate: {
+                lowSeconds: estimate.lowSeconds,
+                highSeconds: estimate.highSeconds,
+                confidence: estimate.confidence,
+                drivers: estimate.drivers,
+                dataQualityWarnings: estimate.dataQualityWarnings,
+                goalGapLabel: estimate.goalGapLabel,
+              },
+            }));
+          } catch (err) {
+            // Silent fail for live estimation
+          }
+        }
+
+        return currentData;
+      });
+    }, 500); // Debounce 500ms
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -350,6 +408,27 @@ export function PredictorForm() {
           {state.loading ? 'Estimating...' : 'Get My Finish Time Estimate'}
         </button>
       </form>
+
+      {/* Live estimation preview [T-10] */}
+      {state.liveEstimate && !state.result && (
+        <div style={{
+          marginTop: '2rem',
+          padding: '1.5rem',
+          backgroundColor: '#f0f4ff',
+          borderRadius: '8px',
+          borderLeft: '4px solid #667eea',
+        }}>
+          <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: '#666' }}>
+            📊 Live estimate as you type:
+          </p>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#667eea', marginBottom: '0.5rem' }}>
+            {Math.floor(state.liveEstimate.lowSeconds / 60)}:{String(state.liveEstimate.lowSeconds % 60).padStart(2, '0')} – {Math.floor(state.liveEstimate.highSeconds / 60)}:{String(state.liveEstimate.highSeconds % 60).padStart(2, '0')}
+          </div>
+          <div style={{ fontSize: '0.9rem', color: '#666' }}>
+            Confidence: {Math.round(state.liveEstimate.confidence * 100)}%
+          </div>
+        </div>
+      )}
     </div>
   );
 }
