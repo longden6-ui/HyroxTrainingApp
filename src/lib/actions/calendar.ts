@@ -17,7 +17,7 @@ export async function getAthleteCalendar(month: number, year: number) {
 
     // Get athlete's training plan
     const plan = await prisma.trainingPlan.findFirst({
-      where: { athleteId: session.athleteId },
+      where: { athleteId: session.athleteId, status: 'ACTIVE' },
       orderBy: { createdAt: 'desc' },
       include: {
         sessions: {

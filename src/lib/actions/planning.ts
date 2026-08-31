@@ -58,9 +58,10 @@ async function generateTrainingSessions(
           planId,
           ruleSetId,
           title: sessionTitles[sessionIndex % sessionTitles.length],
-          description: `Scheduled training session`,
+          purpose: `Scheduled training session`,
           scheduledDate: new Date(currentDate),
           duration,
+          primaryFocus: 'COMBINED',
           intensityLabel: ['EASY', 'MODERATE', 'HARD'][Math.floor(Math.random() * 3)],
           locked: false,
         });
