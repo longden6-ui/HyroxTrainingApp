@@ -62,7 +62,7 @@ export default function Step5Page() {
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-800 font-semibold">{error}</p>
             </div>
-          }}
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {EQUIPMENT_OPTIONS.map((equipment) => (
