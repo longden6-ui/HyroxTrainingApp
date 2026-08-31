@@ -105,6 +105,25 @@ export async function saveOnboardingStep3(input: unknown) {
   }
 }
 
+export async function submitOnboardingStep3(workPattern: string, physicalDemand: string) {
+  try {
+    const { getSession } = await import('@/src/lib/auth/session');
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    return saveOnboardingStep3({
+      athleteId: session.athleteId,
+      workPattern,
+      physicalDemand,
+    });
+  } catch (error) {
+    console.error('Submit onboarding step 3 error:', error);
+    return { success: false, error: 'Failed to save your information' };
+  }
+}
+
 export async function saveOnboardingStep4(input: unknown) {
   try {
     const validation = validateStep4(input);
