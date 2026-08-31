@@ -18,23 +18,24 @@
     "setup": "bash scripts/setup.sh"
   },
   "dependencies": {
+    "@prisma/client": "^6.0.0",
+    "bcryptjs": "^2.4.3",
     "next": "15.0.0",
     "react": "^18.2.0 || 19.0.0-rc-65a56d0e-20241020",
     "react-dom": "^18.2.0 || 19.0.0-rc-65a56d0e-20241020",
-    "@prisma/client": "^6.0.0",
-    "zod": "^3.22.0",
-    "bcryptjs": "^2.4.3"
+    "zod": "^3.22.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "typescript": "^5.3.0",
-    "prisma": "^6.0.0",
-    "vitest": "^1.0.0",
     "@vitest/ui": "^1.0.0",
-    "@testing-library/react": "^14.0.0",
-    "@testing-library/jest-dom": "^6.0.0"
+    "prisma": "^6.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
