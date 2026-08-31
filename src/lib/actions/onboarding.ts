@@ -10,6 +10,7 @@ import {
   validateStep5,
   validateStep6,
 } from '../onboarding/schema';
+import { detectRedFlags } from '../safety/red-flag';
 
 const prisma = new PrismaClient();
 
@@ -100,6 +101,9 @@ export async function saveOnboardingStep4(input: unknown) {
       update: { mobilityStatus, activePain, painDetails: painDetails || null },
       create: { athleteId, mobilityStatus, activePain, painDetails: painDetails || null },
     });
+
+    // Detect red flags from mobility/pain screening [T-15, US-04]
+    await detectRedFlags(athleteId);
 
     return { success: true, onboarding };
   } catch (error) {
