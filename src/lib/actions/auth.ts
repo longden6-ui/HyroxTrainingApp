@@ -6,6 +6,7 @@ import { validateSignup, validateSignin } from '../auth/schema';
 import { hashPassword, verifyPassword } from '../auth/password';
 import { createSession, clearSession } from '../auth/session';
 import { captureSignupConsents } from './consent';
+import { claimAnonymousPrediction } from './prediction';
 
 const prisma = new PrismaClient();
 
@@ -49,6 +50,9 @@ export async function signup(input: unknown) {
 
     // Capture signup consents [T-12]
     await captureSignupConsents(athlete.id);
+
+    // Claim anonymous prediction if one exists [T-13, FR-P07]
+    await claimAnonymousPrediction(athlete.id);
 
     // Create session
     await createSession(athlete.id, athlete.email, athlete.role);

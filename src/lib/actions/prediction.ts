@@ -1,14 +1,15 @@
 'use server';
 
-import { headers } from 'next/headers';
+// Prediction actions [T-08, T-13]
 import { PrismaClient } from '@prisma/client';
 import { PredictorInput, validatePredictorInput } from '../predictor/schema';
 import { estimateFinishTime, validateEstimate } from '../predictor/estimator';
 import { validateRateLimit } from '../ratelimit';
+import { headers } from 'next/headers';
 
 const prisma = new PrismaClient();
 
-// Server action: validate input, estimate, and persist prediction [T-08]
+// Original prediction creation from T-08 [FR-P06]
 export async function createPrediction(input: unknown) {
   try {
     // Check rate limits [T-09, US-01 criterion 5]
@@ -108,5 +109,39 @@ export async function createPrediction(input: unknown) {
       success: false,
       errors: { _form: 'An error occurred. Please try again.' },
     };
+  }
+}
+
+// Claim anonymous prediction on signup [T-13, FR-P07]
+// Attach most recent anonymous prediction to athlete's account after consent
+export async function claimAnonymousPrediction(athleteId: string): Promise<{
+  success: boolean;
+  claimedPredictionId?: string;
+}> {
+  try {
+    // Find most recent prediction without an athlete (anonymous)
+    const anonymousPrediction = await prisma.prediction.findFirst({
+      where: {
+        athleteId: null,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!anonymousPrediction) {
+      return { success: true }; // No prediction to claim, which is fine
+    }
+
+    // Attach prediction to athlete
+    await prisma.prediction.update({
+      where: { id: anonymousPrediction.id },
+      data: { athleteId },
+    });
+
+    return { success: true, claimedPredictionId: anonymousPrediction.id };
+  } catch (error) {
+    console.error('Claim prediction error:', error);
+    return { success: false };
   }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createPrediction } from '@/src/lib/actions/predict';
+import { createPrediction } from '@/src/lib/actions/prediction';
 import { validatePredictorInput } from '@/src/lib/predictor/schema';
 import { estimateFinishTime } from '@/src/lib/predictor/estimator';
 import { PredictorResult } from './PredictorResult';
