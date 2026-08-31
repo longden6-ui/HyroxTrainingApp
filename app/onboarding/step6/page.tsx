@@ -37,7 +37,7 @@ export default function Step6Page() {
 
       if (result.success) {
         router.push('/dashboard');
-      } else {
+      } else if ('error' in result) {
         setError(result.error || 'Failed to save your information');
       }
     } catch (err) {
