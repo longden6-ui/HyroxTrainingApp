@@ -21,6 +21,7 @@ async function generateTrainingSessions(
   planId: string,
   phases: any,
   planStart: Date,
+  ruleSetId: string,
 ): Promise<number> {
   try {
     const sessionTitles = [
@@ -55,6 +56,7 @@ async function generateTrainingSessions(
         sessions.push({
           athleteId,
           planId,
+          ruleSetId,
           title: sessionTitles[sessionIndex % sessionTitles.length],
           description: `Scheduled training session`,
           scheduledDate: new Date(currentDate),
@@ -174,7 +176,7 @@ export async function generateTrainingPlan(input: GeneratePlanInput) {
     });
 
     // 7. Generate training sessions [T-18, T-19]
-    const sessionCount = await generateTrainingSessions(athleteId, trainingPlan.id, phases, planStart);
+    const sessionCount = await generateTrainingSessions(athleteId, trainingPlan.id, phases, planStart, ruleSet.id);
 
     // 8. Write audit event
     await prisma.auditEvent.create({
