@@ -162,16 +162,16 @@ export default function Step4Page() {
           <div className="mt-8 flex gap-4">
             <a
               href="/onboarding/step3"
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-3 px-6 rounded-lg transition-colors text-center"
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
             >
               Back
             </a>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
             >
-              {loading ? 'Saving...' : 'Continue to Step 5'}
+              {loading ? 'Saving...' : 'Next: Equipment Access →'}
             </button>
           </div>
         </div>
