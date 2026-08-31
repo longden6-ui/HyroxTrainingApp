@@ -1,0 +1,307 @@
+:root {
+  --color-foundation: #4f46e5;
+  --color-development: #059669;
+  --color-race-specific: #dc2626;
+  --color-peak: #ea580c;
+  --color-taper: #0891b2;
+  --color-race-week: #7c3aed;
+  --color-session: #6366f1;
+  --color-rest: #9ca3af;
+  --color-background: #f9fafb;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+}
+
+.calendarContainer {
+  padding: 2rem;
+  background: var(--color-background);
+  border-radius: 0.75rem;
+  max-width: 1200px;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.weeksGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.weekCard {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.weekCard:hover {
+  border-color: var(--color-session);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.weekCard.selected {
+  border-color: var(--color-session);
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.1);
+}
+
+.weekHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.weekHeader h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.phaseTag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.adherenceBar {
+  margin-bottom: 1.5rem;
+}
+
+.adherenceLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.adherenceMetric {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.adherenceTrack {
+  flex: 1;
+  height: 0.5rem;
+  background: var(--color-border);
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.adherenceFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-session), var(--color-development));
+  transition: width 0.3s ease;
+}
+
+.adherencePercent {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  min-width: 3rem;
+  text-align: right;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.dayCell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+.dayCell:hover {
+  background: #f3f4f6;
+  border-color: var(--color-session);
+}
+
+.dayCell.withSession {
+  background: #fef3f2;
+  border-color: var(--color-session);
+}
+
+.dayCell.restDay {
+  background: #f3f4f6;
+  opacity: 0.7;
+}
+
+.dayCell.completed {
+  background: #ecfdf5;
+  border-color: var(--color-development);
+}
+
+.dayName {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.sessionIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.25rem;
+  position: relative;
+  width: 1rem;
+  height: 1rem;
+}
+
+.sessionDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--color-session);
+  border-radius: 50%;
+}
+
+.completedBadge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  width: 1rem;
+  height: 1rem;
+  background: var(--color-development);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.restIndicator {
+  font-size: 0.625rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.weekDetail {
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+}
+
+.detailContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailContent p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.detailPhase,
+.detailAdherence,
+.detailSessions {
+  color: var(--color-text-secondary);
+}
+
+.detailPhase strong,
+.detailAdherence strong,
+.detailSessions strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.legendDot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+}
+
+.legendCheckmark {
+  width: 1rem;
+  height: 1rem;
+  background: var(--color-development);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .calendarContainer {
+    padding: 1rem;
+  }
+
+  .weeksGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .legend {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .weekDays {
+    gap: 0.375rem;
+  }
+
+  .dayCell {
+    font-size: 0.65rem;
+  }
+}
