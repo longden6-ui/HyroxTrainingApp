@@ -133,8 +133,8 @@ describe('Burn-down Dashboard [T-26]', () => {
 
     it('detects compressed time', () => {
       const sessions = [
-        { actualDurationMinutes: 20, plannedDurationMinutes: 45 },
-        { actualDurationMinutes: 22, plannedDurationMinutes: 45 },
+        { painReported: false, actualDurationMinutes: 20, plannedDurationMinutes: 45 },
+        { painReported: false, actualDurationMinutes: 22, plannedDurationMinutes: 45 },
       ];
 
       const flags = detectRiskFlags(0.8, sessions, 0);
