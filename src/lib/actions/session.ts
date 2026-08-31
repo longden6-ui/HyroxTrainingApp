@@ -248,3 +248,130 @@ export async function getSessionCompletionSummary(
     return { error: 'Failed to get completion summary' };
   }
 }
+
+// Get dashboard data [T-26]
+export async function getDashboardData() {
+  try {
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { error: 'Not authenticated' };
+    }
+
+    // Get current plan
+    const plan = await prisma.trainingPlan.findFirst({
+      where: { athleteId: session.athleteId, status: 'ACTIVE' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        sessions: {
+          orderBy: { scheduledDate: 'asc' },
+          include: { checkIn: true },
+        },
+        adjustments: {
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+        },
+      },
+    });
+
+    if (!plan) {
+      return { error: 'No active training plan found' };
+    }
+
+    // Calculate metrics
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const completedSessions = plan.sessions.filter((s: any) => s.locked);
+    const completedMinutes = completedSessions.reduce(
+      (sum: number, s: any) => sum + (s.checkIn?.actualDuration || s.duration),
+      0,
+    );
+    const totalPlannedMinutes = plan.sessions.reduce((sum: number, s: any) => sum + s.duration, 0);
+    const daysRemaining = Math.ceil(
+      (plan.competitionDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    // Find current phase
+    let currentPhase = 'UNKNOWN';
+    let phaseEnd = plan.competitionDate;
+    if (plan.foundationStart && plan.foundationEnd && today <= plan.foundationEnd) {
+      currentPhase = 'FOUNDATION';
+      phaseEnd = plan.foundationEnd;
+    } else if (plan.developmentStart && plan.developmentEnd && today <= plan.developmentEnd) {
+      currentPhase = 'DEVELOPMENT';
+      phaseEnd = plan.developmentEnd;
+    } else if (plan.raceSpecificStart && plan.raceSpecificEnd && today <= plan.raceSpecificEnd) {
+      currentPhase = 'RACE_SPECIFIC';
+      phaseEnd = plan.raceSpecificEnd;
+    } else if (plan.peakStart && plan.peakEnd && today <= plan.peakEnd) {
+      currentPhase = 'PEAK';
+      phaseEnd = plan.peakEnd;
+    } else if (plan.taperStart && plan.taperEnd && today <= plan.taperEnd) {
+      currentPhase = 'TAPER';
+      phaseEnd = plan.taperEnd;
+    } else if (plan.raceWeekStart && today <= plan.competitionDate) {
+      currentPhase = 'RACE_WEEK';
+      phaseEnd = plan.competitionDate;
+    }
+
+    // Next session
+    const nextSession = plan.sessions.find((s: any) => s.scheduledDate >= today && !s.locked);
+
+    // This week's sessions (for adherence)
+    const weekStart = new Date(today);
+    const weekEnd = new Date(today);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+    const weekSessions = plan.sessions.filter(
+      (s: any) => s.scheduledDate >= weekStart && s.scheduledDate < weekEnd,
+    );
+    const completedWeekSessions = weekSessions.filter((s: any) => s.locked);
+    const weekAdherence =
+      weekSessions.length > 0 ? completedWeekSessions.length / weekSessions.length : 0;
+    const recoveryDays = 7 - weekSessions.length;
+
+    // Recent sessions for risk detection
+    const recentStart = new Date(today);
+    recentStart.setDate(recentStart.getDate() - 7);
+    const recentSessions = plan.sessions
+      .filter((s: any) => s.scheduledDate >= recentStart && s.locked)
+      .map((s: any) => ({
+        rpe: s.checkIn?.rpe,
+        painReported: s.checkIn?.painFlag || false,
+        actualDurationMinutes: s.checkIn?.actualDuration ? s.checkIn.actualDuration / 60 : 0,
+        plannedDurationMinutes: s.duration / 60,
+      }));
+
+    // Count consecutive skips
+    let skippedInRow = 0;
+    for (let i = plan.sessions.length - 1; i >= 0; i--) {
+      const s = plan.sessions[i];
+      if (s.locked) break;
+      if (s.scheduledDate < today) {
+        skippedInRow++;
+      }
+    }
+
+    return {
+      success: true,
+      data: {
+        metrics: {
+          completedSessions: completedSessions.length,
+          plannedSessions: plan.sessions.length,
+          completedMinutes,
+          plannedMinutes: totalPlannedMinutes,
+          daysRemaining,
+          currentPhase,
+          phaseEnd,
+          nextSession,
+          recoveryDays,
+          weekAdherence,
+        },
+        recentSessions,
+        skippedInRow,
+        changes: plan.adjustments,
+      },
+    };
+  } catch (error) {
+    console.error('Failed to get dashboard data:', error);
+    return { error: 'Failed to load dashboard data' };
+  }
+}
