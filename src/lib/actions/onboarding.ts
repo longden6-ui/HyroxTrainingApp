@@ -268,9 +268,9 @@ export async function submitOnboardingStep6(availabilityByDay: Record<string, nu
       return saveResult;
     }
 
-    // Generate training plan with default competition date (8 weeks from now)
+    // Generate training plan with default competition date (16 weeks from now)
     const competitionDate = new Date();
-    competitionDate.setDate(competitionDate.getDate() + 56); // 8 weeks
+    competitionDate.setDate(competitionDate.getDate() + 112); // 16 weeks
     const competitionDateIso = competitionDate.toISOString().split('T')[0];
 
     const planResult = await generateTrainingPlan({
