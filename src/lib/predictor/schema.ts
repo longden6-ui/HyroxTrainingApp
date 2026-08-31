@@ -163,6 +163,7 @@ export function validatePredictorInput(input: unknown): ValidationResult {
         weightValue: weightGrams, // Store as grams internally
         weightUnit: 'g',
       } as any,
+      errors: {},
     };
   }
 

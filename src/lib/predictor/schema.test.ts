@@ -116,7 +116,8 @@ describe('Predictor Input Validation [T-06, US-01]', () => {
       const result = validatePredictorInput(input);
 
       expect(result.valid).toBe(true);
-      expect(result.data?.weightValue).toBeCloseTo(80000, -1); // ~80kg
+      // 176.4 lb * 453.592 g/lb ≈ 80014 g
+      expect(Math.abs((result.data?.weightValue || 0) - 80014)).toBeLessThan(2);
     });
 
     it('rejects weight below minimum (30 kg)', () => {
@@ -145,7 +146,7 @@ describe('Predictor Input Validation [T-06, US-01]', () => {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
 
-      const input = validInput({ competitionDate: yesterday.toISOString() });
+      const input = validInput({ competitionDate: yesterday.toISOString() as any });
       const result = validatePredictorInput(input);
 
       expect(result.valid).toBe(false);
@@ -156,7 +157,7 @@ describe('Predictor Input Validation [T-06, US-01]', () => {
       const farFuture = new Date();
       farFuture.setDate(farFuture.getDate() + 366);
 
-      const input = validInput({ competitionDate: farFuture.toISOString() });
+      const input = validInput({ competitionDate: farFuture.toISOString() as any });
       const result = validatePredictorInput(input);
 
       expect(result.valid).toBe(false);
@@ -170,8 +171,8 @@ describe('Predictor Input Validation [T-06, US-01]', () => {
       const farFuture = new Date();
       farFuture.setDate(farFuture.getDate() + 365);
 
-      expect(validatePredictorInput(validInput({ competitionDate: tomorrow.toISOString() })).valid).toBe(true);
-      expect(validatePredictorInput(validInput({ competitionDate: farFuture.toISOString() })).valid).toBe(true);
+      expect(validatePredictorInput(validInput({ competitionDate: tomorrow.toISOString() as any })).valid).toBe(true);
+      expect(validatePredictorInput(validInput({ competitionDate: farFuture.toISOString() as any })).valid).toBe(true);
     });
   });
 

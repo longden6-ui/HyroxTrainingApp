@@ -98,7 +98,8 @@ describe('weightToGrams', () => {
   });
 
   it('converts pounds to grams', () => {
-    expect(weightToGrams(176.4, 'lb')).toBeCloseTo(80000, -1);
+    // 176.4 lb * 453.592 g/lb ≈ 80014 g
+    expect(Math.abs(weightToGrams(176.4, 'lb') - 80014)).toBeLessThan(2);
   });
 
   it('returns same value for grams', () => {

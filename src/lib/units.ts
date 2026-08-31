@@ -25,6 +25,23 @@ export function parseDuration(input: string): number {
 
   const trimmed = input.trim();
 
+  // Try h/m/s suffix format first: "1h30m", "1h 30m 45s", "30m 45s"
+  const hmsMatch = trimmed.match(
+    /^(?:(\d+)\s*h(?:ours?)?)?\s*(?:(\d+)\s*m(?:in(?:utes?)?)?)?\s*(?:(\d+)\s*s(?:ec(?:onds?)?)?)?\s*$/i,
+  );
+
+  if (hmsMatch && (hmsMatch[1] || hmsMatch[2] || hmsMatch[3])) {
+    const hours = hmsMatch[1] ? parseInt(hmsMatch[1], 10) : 0;
+    const minutes = hmsMatch[2] ? parseInt(hmsMatch[2], 10) : 0;
+    const seconds = hmsMatch[3] ? parseInt(hmsMatch[3], 10) : 0;
+
+    if (minutes >= 60 || seconds >= 60) {
+      throw new Error(`Invalid time: minutes and seconds must be < 60`);
+    }
+
+    return hours * 3600 + minutes * 60 + seconds;
+  }
+
   // Format: "HH:MM:SS" or "MM:SS"
   if (trimmed.includes(':')) {
     const parts = trimmed.split(':').map((p) => parseInt(p, 10));
@@ -57,23 +74,6 @@ export function parseDuration(input: string): number {
     if (num < 0) throw new Error('Duration cannot be negative');
     // Assume seconds if <= 3600 (1 hour), otherwise could be minutes
     return num;
-  }
-
-  // Format: "1h30m", "1h 30m 45s", "30m 45s"
-  const hmsMatch = trimmed.match(
-    /^(?:(\d+)\s*h)?\s*(?:(\d+)\s*m)?\s*(?:(\d+)\s*s)?$/i,
-  );
-
-  if (hmsMatch) {
-    const hours = hmsMatch[1] ? parseInt(hmsMatch[1], 10) : 0;
-    const minutes = hmsMatch[2] ? parseInt(hmsMatch[2], 10) : 0;
-    const seconds = hmsMatch[3] ? parseInt(hmsMatch[3], 10) : 0;
-
-    if (minutes >= 60 || seconds >= 60) {
-      throw new Error(`Invalid time: minutes and seconds must be < 60`);
-    }
-
-    return hours * 3600 + minutes * 60 + seconds;
   }
 
   throw new Error(`Could not parse duration: "${input}"`);
