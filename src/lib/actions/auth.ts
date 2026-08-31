@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { validateSignup, validateSignin } from '../auth/schema';
 import { hashPassword, verifyPassword } from '../auth/password';
 import { createSession, clearSession } from '../auth/session';
+import { captureSignupConsents } from './consent';
 
 const prisma = new PrismaClient();
 
@@ -45,6 +46,9 @@ export async function signup(input: unknown) {
         role: 'ATHLETE',
       },
     });
+
+    // Capture signup consents [T-12]
+    await captureSignupConsents(athlete.id);
 
     // Create session
     await createSession(athlete.id, athlete.email, athlete.role);
