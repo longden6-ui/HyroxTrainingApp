@@ -9,9 +9,14 @@ export default function Home() {
         <p className={styles.description}>
           Get a free finish-time estimate, then build a day-by-day training plan that fits your schedule and targets your biggest obstacles.
         </p>
-        <a href="/predict" className={styles.cta_button}>
-          Get Your Finish Time Estimate
-        </a>
+        <div className={styles.button_group}>
+          <a href="/predict" className={styles.cta_button}>
+            Get Your Finish Time Estimate
+          </a>
+          <a href="/signin" className={styles.login_button}>
+            Sign In
+          </a>
+        </div>
       </section>
 
       <section className={styles.features}>

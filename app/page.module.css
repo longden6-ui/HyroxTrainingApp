@@ -29,6 +29,14 @@
   opacity: 0.9;
 }
 
+.button_group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .cta_button {
   display: inline-block;
   padding: 1rem 2rem;
@@ -44,6 +52,24 @@
 .cta_button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.login_button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  color: white;
+  text-decoration: none;
+  border: 2px solid white;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+}
+
+.login_button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }
 
 .features {
