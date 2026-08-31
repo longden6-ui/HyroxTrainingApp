@@ -86,14 +86,25 @@ export async function createPlanAdjustment(input: {
   changesSummary: string;
 }) {
   try {
+    const plan = await prisma.trainingPlan.findUnique({
+      where: { id: input.planId },
+      select: { version: true },
+    });
+
+    if (!plan) {
+      return { success: false, error: 'Plan not found' };
+    }
+
     const adjustment = await prisma.planAdjustment.create({
       data: {
         planId: input.planId,
+        version: plan.version + 1,
         reason: input.reason.description,
         changesSummary: input.changesSummary,
         material: input.material,
         status: input.material ? 'PENDING' : 'AUTO_APPLIED',
-        appliedAt: input.material ? null : new Date(),
+        approvedAt: input.material ? null : new Date(),
+        approvedBy: input.material ? null : 'SYSTEM',
       },
     });
 
@@ -134,16 +145,16 @@ export async function recalculateFutureSessions(
       return { success: true, sessionsMoved: 0 };
     }
 
-    // T-28: For missed sessions, redistribute to future dates WITHOUT stacking [FR-A04]
+    // T-28: For missed sessions, mark them with null purpose to indicate skipped [FR-A04]
     const missedSessions = plan.sessions.filter((s) => s.scheduledDate < today && !s.locked && !s.checkIn);
 
     if (missedSessions.length > 0) {
-      // Mark as skipped (not attempted to re-add to future workload)
+      // Mark as skipped by clearing purpose (not attempted to re-add to future workload)
       for (const missed of missedSessions) {
         await prisma.trainingSession.update({
           where: { id: missed.id },
           data: {
-            skipped: true,
+            purpose: `[SKIPPED] ${missed.purpose}`,
           },
         });
       }
@@ -189,18 +200,21 @@ export async function verifyNoWorkloadStacking(planId: string): Promise<{ valid:
   today.setHours(0, 0, 0, 0);
 
   // Check that no missed session time is re-added to future dates
-  const missedSessions = plan.sessions.filter((s) => s.scheduledDate < today && s.skipped);
+  const missedSessions = plan.sessions.filter(
+    (s) => s.scheduledDate < today && s.purpose?.startsWith('[SKIPPED]'),
+  );
   const totalMissedMinutes = missedSessions.reduce((sum, s) => sum + s.duration / 60, 0);
 
   if (totalMissedMinutes > 0) {
-    // Verify future sessions don't have added duration
+    // Verify future sessions don't have added duration beyond plan
     const futureSessions = plan.sessions.filter((s) => s.scheduledDate >= today);
-    const futureExtra = futureSessions.filter((s) => s.duration > 3600); // > 60 minutes is suspicious
+    const avgSessionDuration = plan.sessions.reduce((sum, s) => sum + s.duration, 0) / plan.sessions.length;
+    const futureExtra = futureSessions.filter((s) => s.duration > avgSessionDuration * 1.5);
 
     if (futureExtra.length > 0) {
       return {
         valid: false,
-        error: `Missed workload (${totalMissedMinutes}min) detected in ${futureExtra.length} future sessions. This violates FR-A04.`,
+        error: `Missed workload (${totalMissedMinutes}min) may have been re-added. This violates FR-A04.`,
       };
     }
   }

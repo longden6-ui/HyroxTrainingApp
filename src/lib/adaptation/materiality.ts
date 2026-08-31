@@ -98,7 +98,8 @@ export async function acceptMaterialChange(
       where: { id: adjustmentId },
       data: {
         status: 'AUTO_APPLIED',
-        appliedAt: new Date(),
+        approvedAt: new Date(),
+        approvedBy: 'ATHLETE',
       },
     });
 

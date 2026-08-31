@@ -74,8 +74,6 @@ export async function pausePlanForSafety(
       where: { id: planId },
       data: {
         status: 'PAUSED_FOR_SAFETY',
-        pausedAt: new Date(),
-        pauseReason: reason,
       },
     });
 
@@ -130,8 +128,6 @@ export async function resumePausedPlan(
       where: { id: planId },
       data: {
         status: 'ACTIVE',
-        pausedAt: null,
-        pauseReason: null,
       },
     });
 

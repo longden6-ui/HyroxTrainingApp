@@ -129,9 +129,9 @@ describe('Phase 5 - Adaptation [T-27 through T-30]', () => {
 
     it('prevents recalculation while paused', () => {
       const planStatus = 'PAUSED_FOR_SAFETY';
-      const canRecalculate = planStatus !== 'PAUSED_FOR_SAFETY';
+      const isSafetyPaused = planStatus === 'PAUSED_FOR_SAFETY';
 
-      expect(canRecalculate).toBe(false);
+      expect(isSafetyPaused).toBe(true);
     });
   });
 
@@ -151,7 +151,7 @@ describe('Phase 5 - Adaptation [T-27 through T-30]', () => {
     });
 
     it('FR-A05: Plan pauses for safety, no silent downgrades', () => {
-      const planStatus = 'PAUSED_FOR_SAFETY';
+      const planStatus: string = 'PAUSED_FOR_SAFETY';
       const isSilentDowngrade = planStatus === 'ACTIVE'; // If it stayed active, that would be silent
 
       expect(isSilentDowngrade).toBe(false);
