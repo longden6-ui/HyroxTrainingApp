@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
-import { getAthleteCalendar } from '@/lib/actions/calendar';
-import { CalendarView } from '@/components/athlete/CalendarView';
+import { getSession } from '@/src/lib/auth/session';
+import { getAthleteCalendar } from '@/src/lib/actions/calendar';
+import { CalendarView } from '@/src/components/athlete/CalendarView';
 
 export const metadata = {
   title: 'Training Calendar | HYROX Coach',

@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
-import { getDashboardData } from '@/lib/actions/session';
-import { calculateBurndownMetrics, detectRiskFlags, formatBurndownForDisplay } from '@/lib/athlete/burndown';
-import { BurndownChart } from '@/components/athlete/BurndownChart';
-import { StatusIndicator } from '@/components/athlete/StatusIndicator';
-import { RiskFlags } from '@/components/athlete/RiskFlags';
+import { getSession } from '@/src/lib/auth/session';
+import { getDashboardData } from '@/src/lib/actions/session';
+import { calculateBurndownMetrics, detectRiskFlags, formatBurndownForDisplay } from '@/src/lib/athlete/burndown';
+import { BurndownChart } from '@/src/components/athlete/BurndownChart';
+import { StatusIndicator } from '@/src/components/athlete/StatusIndicator';
+import { RiskFlags } from '@/src/components/athlete/RiskFlags';
 
 export const metadata = {
   title: 'Dashboard | HYROX Coach',
