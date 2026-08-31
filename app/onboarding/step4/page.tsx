@@ -32,24 +32,27 @@ export default function Step4Page() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+    <main className="min-h-screen bg-gray-50">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-12 px-4 mb-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
+              4
+            </div>
+            <h1 className="text-4xl font-bold">Mobility & Pain Screening</h1>
+          </div>
+          <p className="text-purple-100 text-lg">Help us understand any physical limitations so we can adapt your training safely.</p>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 pb-12">
         <div className="mb-8">
-          <a href="/onboarding" className="text-blue-600 hover:text-blue-700 font-semibold mb-4 inline-block">
+          <a href="/onboarding" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
             ← Back to Onboarding
           </a>
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center mb-4">
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
-                4
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 ml-4">Mobility & Pain Screening</h1>
-            </div>
-            <p className="text-gray-600">Help us understand any physical limitations or concerns</p>
-          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-8">
+        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-800 font-semibold">{error}</p>

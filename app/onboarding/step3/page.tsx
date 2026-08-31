@@ -36,24 +36,27 @@ export default function Step3Page() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+    <main className="min-h-screen bg-gray-50">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-12 px-4 mb-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
+              3
+            </div>
+            <h1 className="text-4xl font-bold">Work Pattern & Physical Demand</h1>
+          </div>
+          <p className="text-purple-100 text-lg">Help us understand your work schedule and physical demands so we can plan training around your lifestyle.</p>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 pb-12">
         <div className="mb-8">
-          <a href="/onboarding" className="text-blue-600 hover:text-blue-700 font-semibold mb-4 inline-block">
+          <a href="/onboarding" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
             ← Back to Onboarding
           </a>
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center mb-4">
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
-                3
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 ml-4">Work Pattern & Physical Demand</h1>
-            </div>
-            <p className="text-gray-600">Tell us about your job and physical demands throughout the day</p>
-          </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-8">
+        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-800 font-semibold">{error}</p>
@@ -194,16 +197,16 @@ export default function Step3Page() {
           <div className="mt-8 flex gap-4">
             <a
               href="/onboarding/step2"
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-3 px-6 rounded-lg transition-colors text-center"
+              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
             >
               Back
             </a>
             <button
               onClick={handleSubmit}
               disabled={loading || !workPattern || !physicalDemand}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
             >
-              {loading ? 'Saving...' : 'Continue to Step 4'}
+              {loading ? 'Saving...' : 'Next: Mobility & Pain →'}
             </button>
           </div>
         </div>
