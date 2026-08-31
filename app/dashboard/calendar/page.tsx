@@ -1,35 +1,60 @@
-import { redirect } from 'next/navigation';
-import { getSession } from '@/src/lib/auth/session';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { getAthleteCalendar } from '@/src/lib/actions/calendar';
 import { CalendarView } from '@/src/components/athlete/CalendarView';
 
-export const metadata = {
-  title: 'Training Calendar | HYROX Coach',
-  description: 'View your personalized HYROX training plan calendar',
-};
+export default function CalendarPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [calendarData, setCalendarData] = useState<any>(null);
 
-export default async function CalendarPage({
-  searchParams,
-}: {
-  searchParams: { month?: string; year?: string };
-}) {
-  const session = await getSession();
-  if (!session?.athleteId) {
-    redirect('/signin');
+  const month = searchParams.get('month') ? parseInt(searchParams.get('month')!) : new Date().getMonth();
+  const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : new Date().getFullYear();
+
+  useEffect(() => {
+    const loadCalendar = async () => {
+      setLoading(true);
+      setError(null);
+
+      const result = await getAthleteCalendar(month, year);
+
+      if (result.success) {
+        setCalendarData(result.calendar);
+      } else {
+        setError(result.error || 'Unable to load calendar');
+      }
+
+      setLoading(false);
+    };
+
+    loadCalendar();
+  }, [month, year]);
+
+  const handleNavigate = (newMonth: number, newYear: number) => {
+    router.push(`/dashboard/calendar?month=${newMonth}&year=${newYear}`);
+  };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-50 py-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <p className="text-gray-600">Loading calendar...</p>
+        </div>
+      </main>
+    );
   }
 
-  const now = new Date();
-  const month = searchParams.month ? parseInt(searchParams.month) : now.getMonth();
-  const year = searchParams.year ? parseInt(searchParams.year) : now.getFullYear();
-
-  const calendarResult = await getAthleteCalendar(month, year);
-
-  if (!calendarResult.success) {
+  if (error) {
     return (
       <div className="p-8">
         <h1 className="text-2xl font-bold mb-4">Training Calendar</h1>
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <p className="text-amber-900">{calendarResult.error || 'Unable to load calendar'}</p>
+          <p className="text-amber-900">{error}</p>
           <p className="text-amber-800 text-sm mt-2">
             Generate a training plan to see your schedule.
           </p>
@@ -37,10 +62,6 @@ export default async function CalendarPage({
       </div>
     );
   }
-
-  const handleNavigate = (newMonth: number, newYear: number) => {
-    window.location.href = `/dashboard/calendar?month=${newMonth}&year=${newYear}`;
-  };
 
   return (
     <main className="min-h-screen bg-gray-50 py-8">
@@ -50,11 +71,11 @@ export default async function CalendarPage({
           <p className="text-gray-600">View your personalized HYROX training plan by week</p>
         </div>
 
-        {calendarResult.calendar && (
+        {calendarData && (
           <>
             <CalendarView
-              monthName={calendarResult.calendar.monthName}
-              weeks={calendarResult.calendar.weeks}
+              monthName={calendarData.monthName}
+              weeks={calendarData.weeks}
               onSessionClick={(week: string, day: string) => {
                 console.log(`Clicked ${day} in ${week}`);
               }}
