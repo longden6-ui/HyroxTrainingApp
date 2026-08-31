@@ -1,13 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import styles from './Navigation.module.css';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          setUserEmail(data.email);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user:', error);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     // Call logout server action
@@ -29,6 +45,9 @@ export default function Navigation() {
         </Link>
 
         <div className={styles.menuButton}>
+          {userEmail && (
+            <span className={styles.userEmail}>{userEmail}</span>
+          )}
           <button
             className={styles.hamburger}
             onClick={() => setIsOpen(!isOpen)}
