@@ -4,14 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const STATIONS = [
-  'SkiErg',
-  'Rowing',
-  'WallBalls',
-  'SledPush',
-  'SledPull',
-  'BurpeeStationJump',
-  'TireFlip',
-  'RaftCarry',
+  { name: 'SkiErg (1,000m)', id: 'skierg' },
+  { name: 'Sled Push (50m)', id: 'sled_push' },
+  { name: 'Sled Pull (50m)', id: 'sled_pull' },
+  { name: 'Burpee Broad Jumps (80m)', id: 'burpee_jumps' },
+  { name: 'RowErg (1,000m)', id: 'rowerг' },
+  { name: "Farmer's Carry (200m)", id: 'farmers_carry' },
+  { name: 'Sandbag Lunges (100m)', id: 'sandbag_lunges' },
+  { name: 'Wall Balls (100 reps)', id: 'wall_balls' },
 ];
 
 export default function Step1Page() {
@@ -63,7 +63,7 @@ export default function Step1Page() {
 
   // Available options for each dropdown (exclude already selected stations)
   const getOptionsForRank = (currentRank: string, otherRank1: string, otherRank2: string) => {
-    return STATIONS.filter((s) => s !== otherRank1 && s !== otherRank2);
+    return STATIONS.filter((s) => s.id !== otherRank1 && s.id !== otherRank2);
   };
 
   return (
@@ -109,8 +109,8 @@ export default function Step1Page() {
               >
                 <option value="">-- Select a station --</option>
                 {getOptionsForRank(rank1, rank2, rank3).map((station) => (
-                  <option key={station} value={station}>
-                    {station}
+                  <option key={station.id} value={station.id}>
+                    {station.name}
                   </option>
                 ))}
               </select>
@@ -133,8 +133,8 @@ export default function Step1Page() {
               >
                 <option value="">-- Select a station --</option>
                 {getOptionsForRank(rank2, rank1, rank3).map((station) => (
-                  <option key={station} value={station}>
-                    {station}
+                  <option key={station.id} value={station.id}>
+                    {station.name}
                   </option>
                 ))}
               </select>
@@ -157,8 +157,8 @@ export default function Step1Page() {
               >
                 <option value="">-- Select a station --</option>
                 {getOptionsForRank(rank3, rank1, rank2).map((station) => (
-                  <option key={station} value={station}>
-                    {station}
+                  <option key={station.id} value={station.id}>
+                    {station.name}
                   </option>
                 ))}
               </select>
@@ -167,8 +167,9 @@ export default function Step1Page() {
 
           <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-900">
-              <strong>All 8 HYROX Stations:</strong> SkiErg, Rowing, WallBalls, SledPush, SledPull,
-              BurpeeStationJump, TireFlip, RaftCarry
+              <strong>All 8 HYROX Stations:</strong> SkiErg (1,000m), Sled Push (50m), Sled Pull (50m),
+              Burpee Broad Jumps (80m), RowErg (1,000m), Farmer's Carry (200m), Sandbag Lunges (100m),
+              Wall Balls (100 reps)
             </p>
           </div>
 
