@@ -34,12 +34,7 @@ export async function completeTrainingSession(checkInData: {
     const trainingSession = await prisma.trainingSession.findFirst({
       where: {
         id: checkInData.sessionId,
-        trainingPlan: {
-          athleteId: session.athleteId,
-        },
-      },
-      include: {
-        trainingPlan: true,
+        athleteId: session.athleteId,
       },
     });
 
@@ -47,18 +42,30 @@ export async function completeTrainingSession(checkInData: {
       return { error: 'Session not found' };
     }
 
+    // Map to actual SessionCheckIn schema fields
+    const mobilityNotesValue = checkInData.mobilityReported
+      ? checkInData.mobilityLimitations.length > 0
+        ? 'LIMITED'
+        : 'GOOD'
+      : undefined;
+
+    const painNotesValue = checkInData.painReported ? checkInData.painSeverity : undefined;
+
     // Create check-in record [T-25, FR-A01]
     const checkIn = await prisma.sessionCheckIn.create({
       data: {
         sessionId: checkInData.sessionId,
+        athleteId: session.athleteId,
         rpe: checkInData.rpe,
-        actualDurationSeconds: checkInData.actualDurationMinutes * 60,
-        painReported: checkInData.painReported,
-        painSeverity: checkInData.painSeverity,
-        mobilityReported: checkInData.mobilityReported,
-        mobilityLimitations: checkInData.mobilityLimitations,
-        substitutionsPerformed: checkInData.substitutionsPerformed,
+        actualDuration: checkInData.actualDurationMinutes * 60,
+        painFlag: checkInData.painReported,
+        painNotes: painNotesValue || null,
+        mobilityFlag: checkInData.mobilityReported,
+        mobilityNotes: mobilityNotesValue || null,
+        performedSubstitution: checkInData.substitutionsPerformed[0] || null,
+        substitutionReason: checkInData.notes || null,
         notes: checkInData.notes || null,
+        completionStatus: 'COMPLETED',
         completedAt: new Date(),
       },
     });
@@ -68,24 +75,23 @@ export async function completeTrainingSession(checkInData: {
       where: { id: checkInData.sessionId },
       data: {
         locked: true,
-        completedAt: new Date(),
       },
     });
 
-    // Create audit log for completion
-    await prisma.auditLog.create({
+    // Create audit event for completion
+    await prisma.auditEvent.create({
       data: {
         athleteId: session.athleteId,
-        action: 'SESSION_COMPLETED',
-        resourceType: 'TrainingSession',
-        resourceId: checkInData.sessionId,
-        metadata: {
+        eventType: 'SESSION_LOCKED',
+        description: `Session ${trainingSession.title} completed with RPE ${checkInData.rpe}`,
+        metadata: JSON.stringify({
+          sessionId: checkInData.sessionId,
           rpe: checkInData.rpe,
           actualMinutes: checkInData.actualDurationMinutes,
-          plannedMinutes: trainingSession.durationSeconds / 60,
+          plannedMinutes: Math.ceil(trainingSession.duration / 60),
           painReported: checkInData.painReported,
           mobilityReported: checkInData.mobilityReported,
-        },
+        }),
       },
     });
 
@@ -109,32 +115,33 @@ export async function getSessionCheckInHistory(sessionId: string) {
       return { error: 'Not authenticated' };
     }
 
-    const checkIns = await prisma.sessionCheckIn.findMany({
-      where: {
-        session: {
-          trainingPlan: {
-            athleteId: session.athleteId,
-          },
-        },
-        sessionId,
-      },
-      orderBy: { completedAt: 'desc' },
+    const checkIn = await prisma.sessionCheckIn.findUnique({
+      where: { sessionId },
     });
+
+    if (!checkIn) {
+      return { success: true, checkIn: null };
+    }
+
+    if (checkIn.athleteId !== session.athleteId) {
+      return { error: 'Not authorized' };
+    }
 
     return {
       success: true,
-      checkIns: checkIns.map((ci) => ({
-        id: ci.id,
-        rpe: ci.rpe,
-        actualDurationMinutes: ci.actualDurationSeconds / 60,
-        painReported: ci.painReported,
-        painSeverity: ci.painSeverity,
-        mobilityReported: ci.mobilityReported,
-        mobilityLimitations: ci.mobilityLimitations,
-        substitutions: ci.substitutionsPerformed,
-        notes: ci.notes,
-        completedAt: ci.completedAt.toISOString(),
-      })),
+      checkIn: {
+        id: checkIn.id,
+        rpe: checkIn.rpe,
+        actualDurationMinutes: checkIn.actualDuration ? checkIn.actualDuration / 60 : 0,
+        painReported: checkIn.painFlag,
+        painNotes: checkIn.painNotes,
+        mobilityReported: checkIn.mobilityFlag,
+        mobilityNotes: checkIn.mobilityNotes,
+        substitutions: checkIn.performedSubstitution,
+        notes: checkIn.notes,
+        status: checkIn.completionStatus,
+        completedAt: checkIn.completedAt.toISOString(),
+      },
     };
   } catch (error) {
     console.error('Failed to load check-in history:', error);
@@ -155,9 +162,7 @@ export async function getIncompleteSessionsForWeek(weekStartDate: Date) {
 
     const incompleteSessions = await prisma.trainingSession.findMany({
       where: {
-        trainingPlan: {
-          athleteId: session.athleteId,
-        },
+        athleteId: session.athleteId,
         scheduledDate: {
           gte: weekStartDate,
           lt: weekEndDate,
@@ -173,8 +178,8 @@ export async function getIncompleteSessionsForWeek(weekStartDate: Date) {
         id: ts.id,
         title: ts.title,
         scheduledDate: ts.scheduledDate.toISOString(),
-        duration: ts.durationSeconds,
-        intensity: ts.intensity,
+        duration: ts.duration,
+        intensity: ts.intensityLabel,
       })),
     };
   } catch (error) {
@@ -205,33 +210,27 @@ export async function getSessionCompletionSummary(
 
     const sessions = await prisma.trainingSession.findMany({
       where: {
-        trainingPlan: {
-          athleteId: session.athleteId,
-        },
+        athleteId: session.athleteId,
         scheduledDate: {
           gte: startDate,
           lte: endDate,
         },
       },
       include: {
-        checkIns: {
-          orderBy: { completedAt: 'desc' },
-          take: 1,
-        },
+        checkIn: true,
       },
     });
 
     const completedSessions = sessions.filter((s: any) => s.locked);
-    const totalPlannedMinutes = sessions.reduce((sum: number, s: any) => sum + s.durationSeconds / 60, 0);
+    const totalPlannedMinutes = sessions.reduce((sum: number, s: any) => sum + s.duration / 60, 0);
     const totalCompletedMinutes = completedSessions.reduce(
-      (sum: number, s: any) => sum + (s.checkIns[0]?.actualDurationSeconds || s.durationSeconds) / 60,
+      (sum: number, s: any) => sum + (s.checkIn?.actualDuration || s.duration) / 60,
       0,
     );
 
     const rpes: number[] = completedSessions
-      .flatMap((s: any) => s.checkIns)
-      .filter((ci: any) => ci.rpe !== null)
-      .map((ci: any) => ci.rpe);
+      .map((s: any) => s.checkIn?.rpe)
+      .filter((rpe: any) => rpe !== null && rpe !== undefined) as number[];
 
     const averageRpe = rpes.length > 0 ? rpes.reduce((a: number, b: number) => a + b, 0) / rpes.length : 0;
 

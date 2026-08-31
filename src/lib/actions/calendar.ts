@@ -36,36 +36,35 @@ export async function getAthleteCalendar(month: number, year: number) {
       id: session.id,
       date: session.scheduledDate,
       title: session.title,
-      duration: session.durationSeconds,
+      duration: session.duration,
       primaryFocus: session.primaryFocus,
-      intensity: session.intensity as 'EASY' | 'MODERATE' | 'HARD' | 'RACE_PACE',
+      intensity: (session.intensityLabel || 'EASY') as 'EASY' | 'MODERATE' | 'HARD' | 'RACE_PACE',
       completed: session.locked, // Session is locked after completion
-      phase: session.phase,
+      phase: session.phase || 'UNKNOWN',
     }));
 
-    // Build phase boundaries map
-    const phaseMap = new Map<
-      string,
-      {
-        start: Date;
-        end: Date;
-      }
-    >();
+    // Build phase map from TrainingPlan dates
+    const phaseMap = new Map<string, { start: Date; end: Date }>();
 
-    // Get all phases from the plan's sessions
-    const phases = Array.from(new Set(plan.sessions.map((s: any) => s.phase))) as string[];
-    for (const phase of phases) {
-      const phaseSessions = plan.sessions.filter((s: any) => s.phase === phase);
-      if (phaseSessions.length > 0) {
-        const startDate = new Date(
-          Math.min(...phaseSessions.map((s: any) => s.scheduledDate.getTime())),
-        );
-        const endDate = new Date(
-          Math.max(...phaseSessions.map((s: any) => s.scheduledDate.getTime())),
-        );
-
-        phaseMap.set(phase, { start: startDate, end: endDate });
-      }
+    if (plan.foundationStart && plan.foundationEnd) {
+      phaseMap.set('FOUNDATION', { start: plan.foundationStart, end: plan.foundationEnd });
+    }
+    if (plan.developmentStart && plan.developmentEnd) {
+      phaseMap.set('DEVELOPMENT', { start: plan.developmentStart, end: plan.developmentEnd });
+    }
+    if (plan.raceSpecificStart && plan.raceSpecificEnd) {
+      phaseMap.set('RACE_SPECIFIC', { start: plan.raceSpecificStart, end: plan.raceSpecificEnd });
+    }
+    if (plan.peakStart && plan.peakEnd) {
+      phaseMap.set('PEAK', { start: plan.peakStart, end: plan.peakEnd });
+    }
+    if (plan.taperStart && plan.taperEnd) {
+      phaseMap.set('TAPER', { start: plan.taperStart, end: plan.taperEnd });
+    }
+    if (plan.raceWeekStart) {
+      const raceWeekEnd = new Date(plan.raceWeekStart);
+      raceWeekEnd.setDate(raceWeekEnd.getDate() + 7);
+      phaseMap.set('RACE_WEEK', { start: plan.raceWeekStart, end: raceWeekEnd });
     }
 
     // Build month view
