@@ -80,7 +80,7 @@ export async function getAthleteCalendar(month: number, year: number) {
       success: true,
       calendar: displayData,
       planId: plan.id,
-      raceDate: plan.raceDate,
+      raceDate: plan.competitionDate,
     };
   } catch (error) {
     console.error('Failed to load calendar:', error);
@@ -99,16 +99,10 @@ export async function getSessionDetails(sessionId: string) {
     const trainingSession = await prisma.trainingSession.findFirst({
       where: {
         id: sessionId,
-        trainingPlan: {
-          athleteId: session.athleteId,
-        },
+        athleteId: session.athleteId,
       },
       include: {
-        template: true,
-        checkIns: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-        },
+        checkIn: true,
       },
     });
 
@@ -122,25 +116,24 @@ export async function getSessionDetails(sessionId: string) {
         id: trainingSession.id,
         title: trainingSession.title,
         purpose: trainingSession.purpose,
-        phase: trainingSession.phase,
-        duration: trainingSession.durationSeconds,
-        intensity: trainingSession.intensity,
+        duration: trainingSession.duration,
+        intensity: trainingSession.intensityLabel,
         primaryFocus: trainingSession.primaryFocus,
-        equipment: trainingSession.equipment || [],
-        warmupMinutes: trainingSession.warmupSeconds ? trainingSession.warmupSeconds / 60 : 0,
-        mainMinutes: trainingSession.mainSeconds ? trainingSession.mainSeconds / 60 : 0,
-        cooldownMinutes: trainingSession.cooldownSeconds ? trainingSession.cooldownSeconds / 60 : 0,
+        equipment: trainingSession.equipment ? JSON.parse(trainingSession.equipment) : [],
+        warmupMinutes: trainingSession.warmupDuration ? trainingSession.warmupDuration / 60 : 0,
+        mainMinutes: trainingSession.mainDuration ? trainingSession.mainDuration / 60 : 0,
+        cooldownMinutes: trainingSession.cooldownDuration ? trainingSession.cooldownDuration / 60 : 0,
         safetyNotes: trainingSession.safetyNotes,
         completed: trainingSession.locked,
-        lastCheckIn: trainingSession.checkIns[0]
+        lastCheckIn: trainingSession.checkIn
           ? {
-              rpe: trainingSession.checkIns[0].rpe,
-              actualMinutes: trainingSession.checkIns[0].actualDurationSeconds
-                ? trainingSession.checkIns[0].actualDurationSeconds / 60
+              rpe: trainingSession.checkIn.rpe,
+              actualMinutes: trainingSession.checkIn.actualDuration
+                ? trainingSession.checkIn.actualDuration / 60
                 : 0,
-              painReported: trainingSession.checkIns[0].painReported,
-              mobilityReported: trainingSession.checkIns[0].mobilityReported,
-              notes: trainingSession.checkIns[0].notes,
+              painReported: trainingSession.checkIn.painFlag,
+              mobilityReported: trainingSession.checkIn.mobilityFlag,
+              notes: trainingSession.checkIn.notes,
             }
           : null,
       },
