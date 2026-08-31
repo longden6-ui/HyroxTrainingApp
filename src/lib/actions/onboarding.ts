@@ -2,6 +2,7 @@
 
 // Onboarding server actions [T-14, PRD Appendix A]
 import { PrismaClient } from '@prisma/client';
+import { getSession } from '@/src/lib/auth/session';
 import {
   validateStep1,
   validateStep2,
@@ -40,6 +41,25 @@ export async function saveOnboardingStep1(input: unknown) {
   }
 }
 
+export async function submitOnboardingStep1(stationRank1: string, stationRank2: string, stationRank3: string) {
+  try {
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    return saveOnboardingStep1({
+      athleteId: session.athleteId,
+      stationRank1,
+      stationRank2,
+      stationRank3,
+    });
+  } catch (error) {
+    console.error('Submit onboarding step 1 error:', error);
+    return { success: false, error: 'Failed to save your selections' };
+  }
+}
+
 export async function saveOnboardingStep2(input: unknown) {
   try {
     const validation = validateStep2(input);
@@ -65,7 +85,6 @@ export async function saveOnboardingStep2(input: unknown) {
 
 export async function submitOnboardingStep2(athleticBackground: string, currentWeeklyLoadMinutes: number) {
   try {
-    const { getSession } = await import('@/src/lib/auth/session');
     const session = await getSession();
     if (!session?.athleteId) {
       return { success: false, error: 'Not authenticated' };
@@ -107,7 +126,6 @@ export async function saveOnboardingStep3(input: unknown) {
 
 export async function submitOnboardingStep3(workPattern: string, physicalDemand: string) {
   try {
-    const { getSession } = await import('@/src/lib/auth/session');
     const session = await getSession();
     if (!session?.athleteId) {
       return { success: false, error: 'Not authenticated' };
@@ -152,7 +170,6 @@ export async function saveOnboardingStep4(input: unknown) {
 
 export async function submitOnboardingStep4(mobilityStatus: string, activePain: boolean, painDetails: string) {
   try {
-    const { getSession } = await import('@/src/lib/auth/session');
     const session = await getSession();
     if (!session?.athleteId) {
       return { success: false, error: 'Not authenticated' };
@@ -195,7 +212,6 @@ export async function saveOnboardingStep5(input: unknown) {
 
 export async function submitOnboardingStep5(equipment: string[]) {
   try {
-    const { getSession } = await import('@/src/lib/auth/session');
     const session = await getSession();
     if (!session?.athleteId) {
       return { success: false, error: 'Not authenticated' };
@@ -236,7 +252,6 @@ export async function saveOnboardingStep6(input: unknown) {
 
 export async function submitOnboardingStep6(availabilityByDay: Record<string, number>) {
   try {
-    const { getSession } = await import('@/src/lib/auth/session');
     const session = await getSession();
     if (!session?.athleteId) {
       return { success: false, error: 'Not authenticated' };
@@ -273,6 +288,21 @@ export async function getOnboarding(athleteId: string) {
     };
   } catch (error) {
     console.error('Get onboarding error:', error);
+    return { success: false, onboarding: null };
+  }
+}
+
+// Get current user's onboarding state [T-14]
+export async function getCurrentOnboarding() {
+  try {
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, onboarding: null };
+    }
+
+    return getOnboarding(session.athleteId);
+  } catch (error) {
+    console.error('Get current onboarding error:', error);
     return { success: false, onboarding: null };
   }
 }

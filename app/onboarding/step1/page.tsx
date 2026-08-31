@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { submitOnboardingStep1 } from '@/src/lib/actions/onboarding';
 
 const STATIONS = [
   { name: 'SkiErg (1,000m)', id: 'skierg' },
@@ -38,24 +39,16 @@ export default function Step1Page() {
     setError('');
 
     try {
-      // Save to database via server action
-      const response = await fetch('/api/onboarding/step1', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          stationRank1: rank1,
-          stationRank2: rank2,
-          stationRank3: rank3,
-        }),
-      });
+      // Save to database via server action [T-14]
+      const result = await submitOnboardingStep1(rank1, rank2, rank3);
 
-      if (response.ok) {
-        router.push('/dashboard');
+      if (result.success) {
+        router.push('/onboarding/step2');
       } else {
-        setError('Failed to save selections');
+        setError(result.error || 'Failed to save your selections');
       }
     } catch (err) {
-      setError('An error occurred. You can continue to the dashboard.');
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
