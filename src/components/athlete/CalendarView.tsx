@@ -60,7 +60,7 @@ export function CalendarView({ monthName, weeks, onSessionClick }: CalendarViewP
             </div>
 
             <div className={styles.adherenceBar}>
-              <div className={styles.adherenceLabel}>Adherence</div>
+              <div className={styles.adherenceLabel}>Progress</div>
               <div className={styles.adherenceMetric}>
                 <div className={styles.adherenceTrack}>
                   <div
