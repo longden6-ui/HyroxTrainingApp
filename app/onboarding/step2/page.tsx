@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { saveOnboardingStep2 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep2 } from '@/src/lib/actions/onboarding';
 import { ATHLETIC_BACKGROUNDS } from '@/src/lib/onboarding/schema';
-import { getSession } from '@/src/lib/auth/session';
 
 export default function Step2Page() {
   const router = useRouter();
@@ -29,18 +28,7 @@ export default function Step2Page() {
     setError('');
 
     try {
-      const session = await getSession();
-      if (!session?.athleteId) {
-        setError('Session expired. Please sign in again.');
-        setLoading(false);
-        return;
-      }
-
-      const result = await saveOnboardingStep2({
-        athleteId: session.athleteId,
-        athleticBackground,
-        currentWeeklyLoadMinutes: minutes,
-      });
+      const result = await submitOnboardingStep2(athleticBackground, minutes);
 
       if (result.success) {
         router.push('/onboarding/step3');
