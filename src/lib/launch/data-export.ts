@@ -54,26 +54,34 @@ export async function exportAthleteData(athleteId: string): Promise<{ success: b
   try {
     const athlete = await prisma.athlete.findUnique({
       where: { id: athleteId },
-      include: {
-        plans: {
-          include: {
-            sessions: {
-              include: { checkIn: true },
-            },
-          },
-        },
-        predictions: true,
-        consents: true,
-        auditEvents: {
-          take: 100,
-          orderBy: { createdAt: 'desc' },
-        },
-      },
     });
 
     if (!athlete) {
       return { success: false, error: 'Athlete not found' };
     }
+
+    const plans = await prisma.trainingPlan.findMany({
+      where: { athleteId },
+      include: {
+        sessions: {
+          include: { checkIn: true },
+        },
+      },
+    });
+
+    const predictions = await prisma.prediction.findMany({
+      where: { athleteId },
+    });
+
+    const consents = await prisma.consent.findMany({
+      where: { athleteId },
+    });
+
+    const auditEvents = await prisma.auditEvent.findMany({
+      where: { athleteId },
+      take: 100,
+      orderBy: { createdAt: 'desc' },
+    });
 
     const onboarding = await prisma.onboarding.findUnique({
       where: { athleteId },
@@ -96,12 +104,12 @@ export async function exportAthleteData(athleteId: string): Promise<{ success: b
             // Exclude exact weight, mobility details [PRD 12.2]
           }
         : undefined,
-      plans: athlete.plans.map((plan) => ({
+      plans: plans.map((plan: any) => ({
         id: plan.id,
         status: plan.status,
         competitionDate: plan.competitionDate.toISOString(),
         sessionCount: plan.sessions.length,
-        sessions: plan.sessions.map((session) => ({
+        sessions: plan.sessions.map((session: any) => ({
           id: session.id,
           title: session.title,
           scheduledDate: session.scheduledDate.toISOString(),
@@ -116,20 +124,20 @@ export async function exportAthleteData(athleteId: string): Promise<{ success: b
             : undefined,
         })),
       })),
-      predictions: athlete.predictions.map((pred) => ({
+      predictions: predictions.map((pred: any) => ({
         id: pred.id,
         lowSeconds: pred.lowSeconds,
         highSeconds: pred.highSeconds,
         confidence: pred.confidence,
         createdAt: pred.createdAt.toISOString(),
       })),
-      consents: athlete.consents.map((consent) => ({
+      consents: consents.map((consent: any) => ({
         documentType: consent.documentType,
         grantedAt: consent.grantedAt.toISOString(),
         version: consent.version,
         withdrawn: consent.withdrawnAt !== null,
       })),
-      auditTrail: athlete.auditEvents.map((event) => ({
+      auditTrail: auditEvents.map((event) => ({
         eventType: event.eventType,
         description: event.description,
         createdAt: event.createdAt.toISOString(),
@@ -233,17 +241,21 @@ export async function withdrawConsent(
     }
 
     // Record withdrawal as new event, don't update original [T-31, Immutability]
-    await prisma.consent.update({
+    const consent = await prisma.consent.findFirst({
       where: {
-        athleteId_documentType: {
-          athleteId,
-          documentType,
-        },
-      },
-      data: {
-        withdrawnAt: new Date(),
+        athleteId,
+        documentType,
       },
     });
+
+    if (consent) {
+      await prisma.consent.update({
+        where: { id: consent.id },
+        data: {
+          withdrawnAt: new Date(),
+        },
+      });
+    }
 
     // Audit trail [T-31]
     await prisma.auditEvent.create({

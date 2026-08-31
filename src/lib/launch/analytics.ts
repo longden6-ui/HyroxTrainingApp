@@ -47,16 +47,14 @@ async function hasAnalyticsConsent(athleteId?: string): Promise<boolean> {
     return false;
   }
 
-  const consent = await prisma.consent.findUnique({
+  const consent = await prisma.consent.findFirst({
     where: {
-      athleteId_documentType: {
-        athleteId,
-        documentType: 'ANALYTICS',
-      },
+      athleteId,
+      documentType: 'ANALYTICS',
     },
   });
 
-  return consent !== null && consent.withdrawnAt === null;
+  return consent !== null && !consent.withdrawnAt;
 }
 
 // Track funnel event [T-34]
