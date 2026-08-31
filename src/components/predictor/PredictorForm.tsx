@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { RecencyBandSchema, DivisionSchema, CategorySchema } from '@/src/lib/predictor/schema';
 import { createPrediction } from '@/src/lib/actions/predict';
-import { formatDuration, formatWeight } from '@/src/lib/units';
 import { PredictorResult } from './PredictorResult';
+import styles from './form.module.css';
 
 interface FormState {
   loading: boolean;
@@ -44,7 +43,6 @@ export function PredictorForm() {
         : value,
     }));
 
-    // Clear error for this field
     setState((prev) => ({
       ...prev,
       errors: {
@@ -59,18 +57,15 @@ export function PredictorForm() {
     setState({ loading: true, errors: {} });
 
     try {
-      // Build competition date
       const competitionDate = new Date();
       competitionDate.setDate(competitionDate.getDate() + formData.competitionDateDays);
 
-      // Build target time
       const targetFinishTimeSeconds =
         formData.targetTimeMinutes || formData.targetTimeSeconds
           ? parseInt(formData.targetTimeMinutes || '0', 10) * 60 +
             parseInt(formData.targetTimeSeconds || '0', 10)
           : undefined;
 
-      // Build 5K time
       const fiveKmTimeSeconds = formData.fiveKmTimeMinutes * 60 + formData.fiveKmTimeSeconds;
 
       const input = {
@@ -113,22 +108,21 @@ export function PredictorForm() {
   }
 
   return (
-    <div className="predictor-form">
+    <div className={styles.predictor_form}>
       <h1>HYROX Time Predictor</h1>
-      <p className="subtitle">
+      <p className={styles.subtitle}>
         Get an estimated finish-time range based on your running fitness and event details.
       </p>
 
-      <form onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         {state.errors._form && (
-          <div className="error-banner" role="alert">
+          <div className={styles.error_banner} role="alert">
             {state.errors._form}
           </div>
         )}
 
-        {/* Age */}
-        <fieldset>
-          <label htmlFor="age">Age *</label>
+        <fieldset className={styles.fieldset}>
+          <label htmlFor="age" className={styles.label}>Age *</label>
           <input
             type="number"
             id="age"
@@ -138,40 +132,42 @@ export function PredictorForm() {
             min="16"
             max="120"
             required
+            className={styles.input}
             aria-invalid={!!state.errors.age}
             aria-describedby={state.errors.age ? 'age-error' : undefined}
           />
           {state.errors.age && (
-            <span id="age-error" className="error-message">
+            <span id="age-error" className={styles.error_message}>
               {state.errors.age}
             </span>
           )}
         </fieldset>
 
-        {/* Category & Division */}
-        <div className="form-row">
-          <fieldset>
-            <label htmlFor="category">Category *</label>
+        <div className={styles.form_row}>
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="category" className={styles.label}>Category *</label>
             <select
               id="category"
               name="category"
               value={formData.category}
               onChange={handleInputChange}
               required
+              className={styles.select}
             >
               <option value="INDIVIDUAL">Individual</option>
               <option value="TEAM">Team</option>
             </select>
           </fieldset>
 
-          <fieldset>
-            <label htmlFor="division">Division *</label>
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="division" className={styles.label}>Division *</label>
             <select
               id="division"
               name="division"
               value={formData.division}
               onChange={handleInputChange}
               required
+              className={styles.select}
               aria-invalid={!!state.errors.division}
               aria-describedby={state.errors.division ? 'division-error' : undefined}
             >
@@ -182,17 +178,16 @@ export function PredictorForm() {
               <option value="MIXED_TEAM">Mixed Team</option>
             </select>
             {state.errors.division && (
-              <span id="division-error" className="error-message">
+              <span id="division-error" className={styles.error_message}>
                 {state.errors.division}
               </span>
             )}
           </fieldset>
         </div>
 
-        {/* Weight */}
-        <div className="form-row">
-          <fieldset>
-            <label htmlFor="weightValue">Weight *</label>
+        <div className={styles.form_row}>
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="weightValue" className={styles.label}>Weight *</label>
             <input
               type="number"
               id="weightValue"
@@ -203,24 +198,26 @@ export function PredictorForm() {
               max="200"
               step="0.5"
               required
+              className={styles.input}
               aria-invalid={!!state.errors.weightValue}
               aria-describedby={state.errors.weightValue ? 'weight-error' : undefined}
             />
             {state.errors.weightValue && (
-              <span id="weight-error" className="error-message">
+              <span id="weight-error" className={styles.error_message}>
                 {state.errors.weightValue}
               </span>
             )}
           </fieldset>
 
-          <fieldset>
-            <label htmlFor="weightUnit">Unit *</label>
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="weightUnit" className={styles.label}>Unit *</label>
             <select
               id="weightUnit"
               name="weightUnit"
               value={formData.weightUnit}
               onChange={handleInputChange}
               required
+              className={styles.select}
             >
               <option value="kg">kg</option>
               <option value="lb">lb</option>
@@ -228,10 +225,9 @@ export function PredictorForm() {
           </fieldset>
         </div>
 
-        {/* 5K Time */}
-        <fieldset>
-          <label>Recent 5K Time *</label>
-          <div className="time-input">
+        <fieldset className={styles.fieldset}>
+          <label className={styles.label}>Recent 5K Time *</label>
+          <div className={styles.time_input}>
             <input
               type="number"
               name="fiveKmTimeMinutes"
@@ -242,6 +238,7 @@ export function PredictorForm() {
               placeholder="Minutes"
               aria-label="5K minutes"
               required
+              className={styles.input}
             />
             <span>:</span>
             <input
@@ -253,22 +250,23 @@ export function PredictorForm() {
               max="59"
               placeholder="00"
               aria-label="5K seconds"
+              className={styles.input}
             />
           </div>
           {state.errors.fiveKmTimeSeconds && (
-            <span className="error-message">{state.errors.fiveKmTimeSeconds}</span>
+            <span className={styles.error_message}>{state.errors.fiveKmTimeSeconds}</span>
           )}
         </fieldset>
 
-        {/* 5K Recency */}
-        <fieldset>
-          <label htmlFor="fiveKmRecency">When did you take this 5K test? *</label>
+        <fieldset className={styles.fieldset}>
+          <label htmlFor="fiveKmRecency" className={styles.label}>When did you take this 5K test? *</label>
           <select
             id="fiveKmRecency"
             name="fiveKmRecency"
             value={formData.fiveKmRecency}
             onChange={handleInputChange}
             required
+            className={styles.select}
           >
             <option value="RECENT">Within 30 days</option>
             <option value="3_MONTHS">30–90 days ago</option>
@@ -278,10 +276,9 @@ export function PredictorForm() {
           </select>
         </fieldset>
 
-        {/* Competition Date */}
-        <fieldset>
-          <label htmlFor="competitionDateDays">HYROX Competition Date *</label>
-          <div className="help-text">How many days away?</div>
+        <fieldset className={styles.fieldset}>
+          <label htmlFor="competitionDateDays" className={styles.label}>HYROX Competition Date *</label>
+          <div className={styles.help_text}>How many days away?</div>
           <input
             type="number"
             id="competitionDateDays"
@@ -291,20 +288,20 @@ export function PredictorForm() {
             min="1"
             max="365"
             required
+            className={styles.input}
             aria-invalid={!!state.errors.competitionDate}
             aria-describedby={state.errors.competitionDate ? 'date-error' : undefined}
           />
           {state.errors.competitionDate && (
-            <span id="date-error" className="error-message">
+            <span id="date-error" className={styles.error_message}>
               {state.errors.competitionDate}
             </span>
           )}
         </fieldset>
 
-        {/* Target Time (Optional) */}
-        <fieldset>
-          <label>Target Finish Time (optional)</label>
-          <div className="time-input">
+        <fieldset className={styles.fieldset}>
+          <label className={styles.label}>Target Finish Time (optional)</label>
+          <div className={styles.time_input}>
             <input
               type="number"
               name="targetTimeMinutes"
@@ -314,6 +311,7 @@ export function PredictorForm() {
               max="240"
               placeholder="Minutes"
               aria-label="Target minutes"
+              className={styles.input}
             />
             <span>:</span>
             <input
@@ -325,21 +323,22 @@ export function PredictorForm() {
               max="59"
               placeholder="00"
               aria-label="Target seconds"
+              className={styles.input}
             />
           </div>
           {state.errors.targetFinishTimeSeconds && (
-            <span className="error-message">{state.errors.targetFinishTimeSeconds}</span>
+            <span className={styles.error_message}>{state.errors.targetFinishTimeSeconds}</span>
           )}
         </fieldset>
 
-        {/* Prior Result (Optional) */}
-        <fieldset>
-          <label htmlFor="priorHyroxResult">Have you done HYROX before?</label>
+        <fieldset className={styles.fieldset}>
+          <label htmlFor="priorHyroxResult" className={styles.label}>Have you done HYROX before?</label>
           <select
             id="priorHyroxResult"
             name="priorHyroxResult"
             value={formData.priorHyroxResult}
             onChange={handleInputChange}
+            className={styles.select}
           >
             <option value="NO_PRIOR_RESULT">No, first time</option>
             <option value="COMPLETED">Yes, I completed it</option>
@@ -347,134 +346,10 @@ export function PredictorForm() {
           </select>
         </fieldset>
 
-        <button type="submit" disabled={state.loading}>
+        <button type="submit" disabled={state.loading} className={styles.button}>
           {state.loading ? 'Estimating...' : 'Get My Finish Time Estimate'}
         </button>
       </form>
-
-      <style jsx>{`
-        .predictor-form {
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 2rem;
-        }
-
-        h1 {
-          font-size: 2rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-          color: #666;
-          margin-bottom: 2rem;
-        }
-
-        form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-
-        fieldset {
-          border: none;
-          padding: 0;
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .form-row {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 1rem;
-        }
-
-        label {
-          font-weight: 500;
-          font-size: 0.95rem;
-        }
-
-        input,
-        select {
-          padding: 0.75rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 1rem;
-        }
-
-        input:focus,
-        select:focus {
-          outline: none;
-          border-color: #0066cc;
-          box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-        }
-
-        input[aria-invalid='true'],
-        select[aria-invalid='true'] {
-          border-color: #d32f2f;
-        }
-
-        .time-input {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .time-input input {
-          flex: 1;
-          text-align: center;
-        }
-
-        .time-input span {
-          font-weight: 600;
-        }
-
-        .error-message {
-          color: #d32f2f;
-          font-size: 0.875rem;
-        }
-
-        .error-banner {
-          background-color: #ffebee;
-          border: 1px solid #d32f2f;
-          border-radius: 4px;
-          padding: 1rem;
-          color: #d32f2f;
-        }
-
-        .help-text {
-          font-size: 0.875rem;
-          color: #666;
-        }
-
-        button {
-          padding: 0.875rem;
-          background-color: #0066cc;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          font-size: 1rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-
-        button:hover:not(:disabled) {
-          background-color: #0052a3;
-        }
-
-        button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        @media (max-width: 600px) {
-          .form-row {
-            grid-template-columns: 1fr;
-          }
-        }
-      `}</style>
     </div>
   );
 }
