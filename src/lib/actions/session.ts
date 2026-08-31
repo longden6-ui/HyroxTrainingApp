@@ -1,8 +1,8 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { getSession } from '@/lib/auth/session';
-import { validateSessionCheckIn } from '@/lib/athlete/schema';
+import { getSession } from '@/src/lib/auth/session';
+import { validateSessionCheckIn } from '@/src/lib/athlete/schema';
 
 const prisma = new PrismaClient();
 

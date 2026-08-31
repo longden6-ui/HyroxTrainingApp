@@ -1,9 +1,9 @@
 'use server';
 
 import { PrismaClient } from '@prisma/client';
-import { getSession } from '@/lib/auth/session';
-import { buildMonthView, formatCalendarForDisplay } from '@/lib/athlete/calendar';
-import { getPhaseForDate } from '@/lib/planning/phases';
+import { getSession } from '@/src/lib/auth/session';
+import { buildMonthView, formatCalendarForDisplay } from '@/src/lib/athlete/calendar';
+import { getPhaseForDate } from '@/src/lib/planning/phases';
 
 const prisma = new PrismaClient();
 
