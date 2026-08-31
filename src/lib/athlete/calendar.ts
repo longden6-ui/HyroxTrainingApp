@@ -199,7 +199,7 @@ export function formatCalendarForDisplay(month: CalendarMonth): {
     weekLabel: string;
     phase: string;
     adherence: string;
-    days: Array<{ dayName: string; hasSession: boolean; isRest: boolean; completed: boolean }>;
+    days: Array<{ dayName: string; hasSession: boolean; isRest: boolean; completed: boolean; sessionId?: string }>;
   }>;
 } {
   const monthNames = [
@@ -218,6 +218,7 @@ export function formatCalendarForDisplay(month: CalendarMonth): {
         hasSession: !!day.session,
         isRest: day.isRestDay,
         completed: day.session?.completed || false,
+        sessionId: day.session?.id,
       })),
     })),
   };

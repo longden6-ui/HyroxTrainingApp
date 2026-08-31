@@ -39,8 +39,9 @@ export async function getAthleteCalendar(month: number, year: number) {
       duration: session.duration,
       primaryFocus: session.primaryFocus,
       intensity: (session.intensityLabel || 'EASY') as 'EASY' | 'MODERATE' | 'HARD' | 'RACE_PACE',
-      completed: session.locked, // Session is locked after completion
+      completed: session.locked,
       phase: session.phase || 'UNKNOWN',
+      sessionId: session.id,
     }));
 
     // Build phase map from TrainingPlan dates

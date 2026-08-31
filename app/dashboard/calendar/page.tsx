@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-import { getAthleteCalendar } from '@/src/lib/actions/calendar';
+import { getAthleteCalendar, getSessionDetails } from '@/src/lib/actions/calendar';
 import { CalendarView } from '@/src/components/athlete/CalendarView';
 
 export default function CalendarPage() {
@@ -12,6 +12,8 @@ export default function CalendarPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [calendarData, setCalendarData] = useState<any>(null);
+  const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [sessionDetailsLoading, setSessionDetailsLoading] = useState(false);
 
   const month = searchParams.get('month') ? parseInt(searchParams.get('month')!) : new Date().getMonth();
   const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : new Date().getFullYear();
@@ -37,6 +39,20 @@ export default function CalendarPage() {
 
   const handleNavigate = (newMonth: number, newYear: number) => {
     router.push(`/dashboard/calendar?month=${newMonth}&year=${newYear}`);
+  };
+
+  const handleSessionClick = async (sessionId: string) => {
+    setSessionDetailsLoading(true);
+    try {
+      const result = await getSessionDetails(sessionId);
+      if (result.success) {
+        setSelectedSession(result.session);
+      }
+    } catch (error) {
+      console.error('Failed to load session details:', error);
+    } finally {
+      setSessionDetailsLoading(false);
+    }
   };
 
   if (loading) {
@@ -76,9 +92,7 @@ export default function CalendarPage() {
             <CalendarView
               monthName={calendarData.monthName}
               weeks={calendarData.weeks}
-              onSessionClick={(week: string, day: string) => {
-                console.log(`Clicked ${day} in ${week}`);
-              }}
+              onSessionClick={handleSessionClick}
             />
 
             <div className="mt-8 flex justify-between items-center">
@@ -112,6 +126,84 @@ export default function CalendarPage() {
               </button>
             </div>
           </>
+        )}
+
+        {selectedSession && (
+          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', maxWidth: '42rem', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+              <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 flex justify-between items-center">
+                <h2 className="text-2xl font-bold">{selectedSession.title}</h2>
+                <button
+                  onClick={() => setSelectedSession(null)}
+                  className="text-2xl font-bold hover:opacity-80 transition-opacity"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-600 mb-1">Purpose</h3>
+                  <p className="text-gray-900">{selectedSession.purpose}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Duration</h3>
+                    <p className="text-gray-900">{Math.round(selectedSession.duration / 60)} minutes</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Intensity</h3>
+                    <p className="text-gray-900">{selectedSession.intensity || 'Not specified'}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Focus</h3>
+                    <p className="text-gray-900">{selectedSession.primaryFocus || 'General'}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Status</h3>
+                    <p className="text-gray-900">{selectedSession.completed ? '✓ Completed' : 'Scheduled'}</p>
+                  </div>
+                </div>
+
+                {selectedSession.equipment && selectedSession.equipment.length > 0 && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2">Equipment</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSession.equipment.map((item: string, idx: number) => (
+                        <span
+                          key={idx}
+                          className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedSession.safetyNotes && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Safety Notes</h3>
+                    <p className="text-gray-900">{selectedSession.safetyNotes}</p>
+                  </div>
+                )}
+
+                {selectedSession.lastCheckIn && (
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 className="text-sm font-semibold text-green-800 mb-2">Completion Details</h3>
+                    <div className="space-y-2 text-sm text-green-700">
+                      <p>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
+                      <p>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
+                      {selectedSession.lastCheckIn.notes && (
+                        <p>Notes: {selectedSession.lastCheckIn.notes}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </main>

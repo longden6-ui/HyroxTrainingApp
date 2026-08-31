@@ -10,6 +10,7 @@ interface CalendarDay {
   completed: boolean;
   sessionTitle?: string;
   duration?: string;
+  sessionId?: string;
 }
 
 interface CalendarWeek {
@@ -22,7 +23,7 @@ interface CalendarWeek {
 interface CalendarViewProps {
   monthName: string;
   weeks: CalendarWeek[];
-  onSessionClick?: (weekLabel: string, dayName: string) => void;
+  onSessionClick?: (sessionId: string) => void;
 }
 
 export function CalendarView({ monthName, weeks, onSessionClick }: CalendarViewProps) {
@@ -91,8 +92,11 @@ export function CalendarView({ monthName, weeks, onSessionClick }: CalendarViewP
                       className={styles.sessionIndicator}
                       onClick={(e) => {
                         e.stopPropagation();
-                        onSessionClick?.(week.weekLabel, day.dayName);
+                        if (day.sessionId) {
+                          onSessionClick?.(day.sessionId);
+                        }
                       }}
+                      style={{ cursor: day.sessionId ? 'pointer' : 'default' }}
                     >
                       <div className={styles.sessionDot} />
                       {day.completed && <div className={styles.completedBadge}>✓</div>}
