@@ -65,6 +65,8 @@
   font-weight: 600;
   font-size: 1.1rem;
   transition: all 0.2s;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .login_button:hover {
