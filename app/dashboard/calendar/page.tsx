@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { getAthleteCalendar, getSessionDetails } from '@/src/lib/actions/calendar';
+import { completeTrainingSession, updateSessionNotes } from '@/src/lib/actions/session-update';
 import { CalendarView } from '@/src/components/athlete/CalendarView';
 
 export default function CalendarPage() {
@@ -14,6 +15,8 @@ export default function CalendarPage() {
   const [calendarData, setCalendarData] = useState<any>(null);
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [sessionDetailsLoading, setSessionDetailsLoading] = useState(false);
+  const [sessionNotes, setSessionNotes] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const month = searchParams.get('month') ? parseInt(searchParams.get('month')!) : new Date().getMonth();
   const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : new Date().getFullYear();
@@ -43,15 +46,52 @@ export default function CalendarPage() {
 
   const handleSessionClick = async (sessionId: string) => {
     setSessionDetailsLoading(true);
+    setSessionNotes('');
     try {
       const result = await getSessionDetails(sessionId);
       if (result.success) {
         setSelectedSession(result.session);
+        setSessionNotes(result.session.lastCheckIn?.notes || '');
       }
     } catch (error) {
       console.error('Failed to load session details:', error);
     } finally {
       setSessionDetailsLoading(false);
+    }
+  };
+
+  const handleCompleteSession = async () => {
+    if (!selectedSession) return;
+
+    setIsUpdating(true);
+    try {
+      const result = await completeTrainingSession(selectedSession.id, sessionNotes);
+      if (result.success) {
+        setSelectedSession({ ...selectedSession, completed: true });
+      }
+    } catch (error) {
+      console.error('Failed to complete session:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!selectedSession) return;
+
+    setIsUpdating(true);
+    try {
+      const result = await updateSessionNotes(selectedSession.id, sessionNotes);
+      if (result.success) {
+        setSelectedSession({
+          ...selectedSession,
+          lastCheckIn: { ...selectedSession.lastCheckIn, notes: sessionNotes },
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save notes:', error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -201,6 +241,36 @@ export default function CalendarPage() {
                     </div>
                   </div>
                 )}
+
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-600 mb-2">Session Notes</h3>
+                  <textarea
+                    value={sessionNotes}
+                    onChange={(e) => setSessionNotes(e.target.value)}
+                    placeholder="Add your thoughts, how you felt, any observations..."
+                    className="w-full border border-gray-300 rounded-lg p-3 text-sm font-sans"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  {!selectedSession.completed && (
+                    <button
+                      onClick={handleCompleteSession}
+                      disabled={isUpdating}
+                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                    >
+                      {isUpdating ? 'Marking...' : '✓ Mark as Completed'}
+                    </button>
+                  )}
+                  <button
+                    onClick={handleSaveNotes}
+                    disabled={isUpdating}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                  >
+                    {isUpdating ? 'Saving...' : 'Save Notes'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
