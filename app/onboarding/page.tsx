@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
+import { getSession } from '@/src/lib/auth/session';
 
 export const metadata = {
   title: 'Onboarding - HYROX Coach AI',
