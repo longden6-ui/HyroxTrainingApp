@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import styles from './checkin.module.css';
-import { painReportingOptions, mobilityOptions, rpeGuidance } from '@/lib/athlete/schema';
+import { painReportingOptions, mobilityOptions, rpeGuidance } from '@/src/lib/athlete/schema';
 
 interface SessionCheckInProps {
   sessionId: string;
