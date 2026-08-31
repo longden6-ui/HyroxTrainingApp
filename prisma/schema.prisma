@@ -1,0 +1,464 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ATHLETE
+  COACH
+  ADMIN
+}
+
+enum AuthProvider {
+  EMAIL
+  GOOGLE
+  STRAVA
+}
+
+// Athletes and accounts
+model Athlete {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String?
+  role              UserRole @default(ATHLETE)
+
+  // Profile data
+  firstName         String?
+  lastName          String?
+  age               Int?
+  gender            String?
+  weightGrams       Int?
+  competitionDate   DateTime?
+  targetFinishTime  Int?      // seconds
+  division          String?
+  priorHyroxResult  String?   // "COMPLETED", "DNF", "NO_PRIOR_RESULT"
+
+  // Safety flags
+  redFlag           Boolean  @default(false)
+
+  // Relationships
+  predictions       Prediction[]
+  onboarding        Onboarding?
+  trainingPlans     TrainingPlan[]
+  trainingSessions  TrainingSession[]
+  sessionCheckIns   SessionCheckIn[]
+  consents          Consent[]
+  auditEvents       AuditEvent[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deletedAt         DateTime?
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+// Predictions (public, unauthenticated)
+model Prediction {
+  id                String   @id @default(cuid())
+  athleteId         String?
+  athlete           Athlete? @relation(fields: [athleteId], references: [id], onDelete: SetNull)
+
+  // Inputs
+  age               Int
+  category          String   // "INDIVIDUAL", "TEAM"
+  weightGrams       Int
+  fiveKmTimeSeconds Int
+  fiveKmRecency     String   // "RECENT", "3_MONTHS", "6_MONTHS", "STALE", "NO_DATA"
+  competitionDate   DateTime
+  division          String
+  targetFinishTime  Int?     // seconds
+  priorHyroxResult  String?  // "COMPLETED", "DNF", "NO_PRIOR_RESULT"
+
+  // Results
+  lowSeconds        Int
+  highSeconds       Int
+  confidence        Float    // 0.0 to 1.0
+  drivers           String   // JSON array of {factor: string, label: string, weight: float}
+  dataQualityWarnings String? // JSON array
+  goalGapLabel      String   // "WITHIN_RANGE", "STRETCH", "REQUIRES_MORE_EVIDENCE"
+  modelVersion      String
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId])
+  @@index([createdAt])
+}
+
+// Consent tracking [T-12]
+model Consent {
+  id                String   @id @default(cuid())
+  athleteId         String
+  athlete           Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  documentType      String   // "TERMS", "PRIVACY", "SAFETY_DISCLAIMER", "SENSITIVE_DATA"
+  version           String   // e.g., "2026-08-31"
+  grantedAt         DateTime?
+  withdrawnAt       DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId, documentType])
+}
+
+// Onboarding profile [T-14]
+model Onboarding {
+  id                String   @id @default(cuid())
+  athleteId         String   @unique
+  athlete           Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  // Step 1: Ranked hardest stations
+  stationRank1      String?
+  stationRank2      String?
+  stationRank3      String?
+
+  // Step 2: Athletic background
+  athleticBackground String?  // JSON structured enum
+  currentWeeklyLoadMinutes Int?
+
+  // Step 3: Work pattern
+  workPattern       String?   // "SEDENTARY", "LIGHT", "MODERATE", "HEAVY"
+  physicalDemand    String?   // "LOW", "MODERATE", "HIGH"
+
+  // Step 4: Mobility and pain screening
+  mobilityStatus    String?   // "UNRESTRICTED", "LIMITED_MOBILITY"
+  activePain        Boolean  @default(false)
+  painDetails       String?   // Free text, only if necessary [T-15, FR-P07]
+
+  // Step 5: Equipment access
+  equipment         String?   // JSON array
+
+  // Step 6: Day-by-day availability
+  availabilityByDay String?   // JSON {dayOfWeek: minutesAvailable}
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId])
+}
+
+// HYROX stations (seeded, [T-05])
+model Station {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  displayName       String
+  description       String?
+  order             Int      // 1-8 for standard HYROX
+
+  // Station loads (null = unapproved placeholder [T-05])
+  easyLoadGrams     Int?
+  moderateLoadGrams Int?
+  hardLoadGrams     Int?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([order])
+}
+
+// Divisions (seeded, [T-05])
+model Division {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  displayName       String
+  ageMin            Int?
+  ageMax            Int?
+  genderCategory    String?  // "ALL", "MALE", "FEMALE"
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// Event standard sets (race benchmarks, seeded, [T-05])
+model EventStandardSet {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  version           String
+  eventYear         Int?
+
+  approvedBy        String?  // Accountable professional ID or name [T-16, Constraint 4]
+  approvedAt        DateTime?
+
+  standards         EventStandard[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([approvedAt])
+}
+
+model EventStandard {
+  id                String   @id @default(cuid())
+  setId             String
+  standardSet       EventStandardSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+  divisionId        String
+  division          Division @relation(fields: [divisionId], references: [id], onDelete: Restrict)
+
+  finishTimeSeconds Int      // Expected/typical finish time for this division
+
+  @@unique([setId, divisionId])
+  @@index([setId])
+}
+
+// Guardrail ruleset [T-16, T-20, Constraint 4]
+model RuleSet {
+  id                String   @id @default(cuid())
+  name              String   @unique
+  version           String
+
+  config            String   // JSON with all threshold values and rules
+
+  approvedBy        String?  // Accountable professional ID or name
+  approvedAt        DateTime?
+
+  trainingPlans     TrainingPlan[]
+  trainingSessions  TrainingSession[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([approvedAt])
+}
+
+// Workout templates [T-16]
+model WorkoutTemplate {
+  id                String   @id @default(cuid())
+  name              String
+  version           String
+  description       String?
+
+  status            String   @default("DRAFT") // "DRAFT", "PENDING_APPROVAL", "APPROVED", "DEPRECATED"
+
+  // Session structure
+  duration          Int      // seconds
+  warmupDuration    Int?     // seconds
+  mainDuration      Int?     // seconds
+  cooldownDuration  Int?     // seconds
+
+  // Metadata
+  primaryFocus      String   // "RUNNING", "STRENGTH", "STATION_SKILL", "COMBINED", "MOBILITY", "RECOVERY"
+  phase             String?  // "FOUNDATION", "DEVELOPMENT", "RACE_SPECIFIC", "PEAK", "TAPER"
+  stationName       String?  // If null, station-agnostic
+
+  equipment         String?  // JSON array of required equipment
+  intensityLevel    String?  // "LOW", "MODERATE", "HIGH"
+
+  // Content
+  purposeStatement  String   // Plain-language purpose [FR-G09]
+  instructions      String?  // Steps or guidance
+  substitutions     TemplateSubstitution[]
+
+  approvedBy        String?  // Accountable professional ID
+  approvedAt        DateTime?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([status])
+  @@index([primaryFocus])
+  @@index([phase])
+}
+
+// Approved substitutions within templates [T-16, T-24]
+model TemplateSubstitution {
+  id                String   @id @default(cuid())
+  templateId        String
+  template          WorkoutTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  originalExercise  String
+  substituteName    String
+  explanation       String   // Why this substitution; race specificity impact
+
+  createdAt         DateTime @default(now())
+
+  @@index([templateId])
+}
+
+// Training plans [T-17, FR-P06, T-21]
+model TrainingPlan {
+  id                String   @id @default(cuid())
+  athleteId         String
+  athlete           Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  // Versions and governance
+  version           Int      @default(1)
+  status            String   @default("DRAFT") // "DRAFT", "PENDING_REVIEW", "ACTIVE", "COMPLETED", "PAUSED_FOR_SAFETY"
+
+  // Dates and phases
+  startDate         DateTime
+  competitionDate   DateTime
+  generatedAt       DateTime @default(now())
+
+  // Guardrails and template versions [T-21]
+  ruleSetId         String
+  ruleSet           RuleSet  @relation(fields: [ruleSetId], references: [id])
+  ruleSetVersion    String   // Snapshot of ruleSet.version at generation time
+
+  // Generation metadata
+  generationRationale String?  // Plain-language why this plan was created [FR-G09]
+  assumptions       String?  // JSON: athlete inputs and constraints applied [T-21]
+
+  // Phases [T-17]
+  foundationStart   DateTime?
+  foundationEnd     DateTime?
+  developmentStart  DateTime?
+  developmentEnd    DateTime?
+  raceSpecificStart DateTime?
+  raceSpecificEnd   DateTime?
+  peakStart         DateTime?
+  peakEnd           DateTime?
+  taperStart        DateTime?
+  taperEnd          DateTime?
+  raceWeekStart     DateTime?
+
+  // Sessions
+  sessions          TrainingSession[]
+  adjustments       PlanAdjustment[]
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Individual training sessions [T-18, Constraint 1]
+model TrainingSession {
+  id                String   @id @default(cuid())
+  planId            String
+  plan              TrainingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  athleteId         String
+  athlete           Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  // Scheduling [T-18]
+  scheduledDate     DateTime
+  scheduledHour     Int?
+  duration          Int      // seconds
+
+  // Content
+  templateId        String?  // Null for custom/adaptive sessions
+  templateVersion   String?  // Template version at generation [T-21]
+  title             String
+  purpose           String   // Plain-language rationale [FR-G09, T-21]
+
+  // Session structure
+  primaryFocus      String   // "RUNNING", "STRENGTH", "STATION_SKILL", "COMBINED", "MOBILITY", "RECOVERY"
+  warmupDuration    Int?     // seconds
+  mainDuration      Int?     // seconds
+  cooldownDuration  Int?     // seconds
+
+  // Station-specific
+  targetStation     String?  // Station name if focused
+
+  // Content and guidance
+  equipment         String?  // JSON array
+  intensityLabel    String?  // "EASY", "MODERATE", "HARD", "RACE_PACE"
+  instructions      String?  // Detailed workout steps
+  safetyNotes       String?  // Stop conditions, red flags
+
+  // Substitutions and adaptations
+  performedSubstitution String?  // Name of substitution performed
+  substitutionReason String?  // Why this substitution occurred
+
+  // Completion state [Constraint 1: immutable after check-in, T-25]
+  locked            Boolean  @default(false) // Immutable when locked [FR-A01]
+
+  checkIn           SessionCheckIn?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId])
+  @@index([planId])
+  @@index([scheduledDate])
+  @@unique([planId, scheduledDate])
+}
+
+// Session completion tracking [T-25]
+model SessionCheckIn {
+  id                String   @id @default(cuid())
+  sessionId         String   @unique
+  session           TrainingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  athleteId         String
+  athlete           Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  // Completion
+  completedAt       DateTime
+  completionStatus  String   // "COMPLETED", "SKIPPED", "PARTIAL"
+  actualDuration    Int?     // seconds; may differ from scheduled
+
+  // Feedback
+  rpe               Int?     // Rate of Perceived Exertion, 1-10
+  mobilityFlag      Boolean  @default(false)
+  mobilityNotes     String?  // "GOOD", "LIMITED", "PAIN"; neutral language only
+  painFlag          Boolean  @default(false)
+  painNotes         String?  // Free-text only as last resort [Constraint 6, T-15]
+
+  // Substitutions and adaptations
+  performedSubstitution String?
+  substitutionReason String?
+
+  // Athlete notes
+  notes             String?
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([athleteId])
+  @@index([completedAt])
+}
+
+// Plan adjustments (immutable history) [T-28, T-29, FR-A03]
+model PlanAdjustment {
+  id                String   @id @default(cuid())
+  planId            String
+  plan              TrainingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  version           Int      // Incremental version bump
+  reason            String   // "BENCHMARK_UPDATE", "SCHEDULE_CHANGE", "MISSED_SESSION", "INTERRUPTION", "EQUIPMENT_CHANGE", "USER_MOVED_SESSION"
+  material          Boolean  // Whether adjustment requires athlete approval [T-29]
+  status            String   @default("PENDING") // "PENDING", "AUTO_APPLIED", "ATHLETE_ACCEPTED", "ATHLETE_REJECTED"
+
+  // Structured diff [FR-A03]
+  changesSummary    String   // Plain-language: what changed [FR-A03]
+  diff              String?  // JSON: session-level diffs
+
+  approvedAt        DateTime?
+  approvedBy        String?  // Athlete ID or system
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([planId])
+  @@index([status])
+}
+
+// Audit trail (governance and safety)
+model AuditEvent {
+  id                String   @id @default(cuid())
+  athleteId         String?
+  athlete           Athlete? @relation(fields: [athleteId], references: [id], onDelete: SetNull)
+
+  eventType         String   // "PREDICTION", "ONBOARDING_COMPLETE", "PLAN_GENERATED", "SAFETY_FLAG", "CONSENT_GRANTED", "CONSENT_WITHDRAWN", "SESSION_LOCKED", "PLAN_PAUSED"
+  description       String
+
+  // Metadata (never sensitive values) [Constraint 7, T-33]
+  metadata          String?  // JSON; excludes weight, mobility detail, pain detail, HR, etc.
+
+  createdAt         DateTime @default(now())
+
+  @@index([athleteId])
+  @@index([eventType])
+  @@index([createdAt])
+}
