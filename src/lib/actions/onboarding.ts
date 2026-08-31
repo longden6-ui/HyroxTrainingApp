@@ -150,6 +150,26 @@ export async function saveOnboardingStep4(input: unknown) {
   }
 }
 
+export async function submitOnboardingStep4(mobilityStatus: string, activePain: boolean, painDetails: string) {
+  try {
+    const { getSession } = await import('@/src/lib/auth/session');
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    return saveOnboardingStep4({
+      athleteId: session.athleteId,
+      mobilityStatus,
+      activePain,
+      painDetails: painDetails || undefined,
+    });
+  } catch (error) {
+    console.error('Submit onboarding step 4 error:', error);
+    return { success: false, error: 'Failed to save your information' };
+  }
+}
+
 export async function saveOnboardingStep5(input: unknown) {
   try {
     const validation = validateStep5(input);
@@ -173,6 +193,24 @@ export async function saveOnboardingStep5(input: unknown) {
   }
 }
 
+export async function submitOnboardingStep5(equipment: string[]) {
+  try {
+    const { getSession } = await import('@/src/lib/auth/session');
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    return saveOnboardingStep5({
+      athleteId: session.athleteId,
+      equipment,
+    });
+  } catch (error) {
+    console.error('Submit onboarding step 5 error:', error);
+    return { success: false, error: 'Failed to save your information' };
+  }
+}
+
 export async function saveOnboardingStep6(input: unknown) {
   try {
     const validation = validateStep6(input);
@@ -193,6 +231,24 @@ export async function saveOnboardingStep6(input: unknown) {
   } catch (error) {
     console.error('Onboarding step 6 error:', error);
     return { success: false, error: 'Failed to save step 6' };
+  }
+}
+
+export async function submitOnboardingStep6(availabilityByDay: Record<string, number>) {
+  try {
+    const { getSession } = await import('@/src/lib/auth/session');
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    return saveOnboardingStep6({
+      athleteId: session.athleteId,
+      availabilityByDay,
+    });
+  } catch (error) {
+    console.error('Submit onboarding step 6 error:', error);
+    return { success: false, error: 'Failed to save your information' };
   }
 }
 
