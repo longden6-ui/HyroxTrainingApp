@@ -1,16 +1,70 @@
-import { redirect } from 'next/navigation';
-import { getSession } from '@/src/lib/auth/session';
+'use client';
 
-export const metadata = {
-  title: 'Step 1: Ranked Stations - HYROX Coach AI',
-  description: 'Rank your hardest HYROX stations',
-};
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default async function Step1Page() {
-  const session = await getSession();
-  if (!session?.athleteId) {
-    redirect('/signin');
-  }
+const STATIONS = [
+  'SkiErg',
+  'Rowing',
+  'WallBalls',
+  'SledPush',
+  'SledPull',
+  'BurpeeStationJump',
+  'TireFlip',
+  'RaftCarry',
+];
+
+export default function Step1Page() {
+  const router = useRouter();
+  const [rank1, setRank1] = useState('');
+  const [rank2, setRank2] = useState('');
+  const [rank3, setRank3] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    // Validate selections
+    if (!rank1 || !rank2 || !rank3) {
+      setError('Please select all 3 stations');
+      return;
+    }
+
+    if (rank1 === rank2 || rank1 === rank3 || rank2 === rank3) {
+      setError('You cannot select the same station twice');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // Save to database via server action
+      const response = await fetch('/api/onboarding/step1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stationRank1: rank1,
+          stationRank2: rank2,
+          stationRank3: rank3,
+        }),
+      });
+
+      if (response.ok) {
+        router.push('/dashboard');
+      } else {
+        setError('Failed to save selections');
+      }
+    } catch (err) {
+      setError('An error occurred. You can continue to the dashboard.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Available options for each dropdown (exclude already selected stations)
+  const getOptionsForRank = (currentRank: string, otherRank1: string, otherRank2: string) => {
+    return STATIONS.filter((s) => s !== otherRank1 && s !== otherRank2);
+  };
 
   return (
     <main className="min-h-screen bg-gray-50 py-12 px-4">
@@ -21,31 +75,100 @@ export default async function Step1Page() {
           </a>
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <div className="flex items-center mb-4">
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">1</div>
+              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold">
+                1
+              </div>
               <h1 className="text-3xl font-bold text-gray-900 ml-4">Rank Your Hardest Stations</h1>
             </div>
-            <p className="text-gray-600">Select the 3 HYROX stations that challenge you the most, in order</p>
+            <p className="text-gray-600">Select your 3 most challenging HYROX stations in order</p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-800 font-semibold">{error}</p>
+            </div>
+          )}
+
           <div className="space-y-6">
-            <StationOption rank={1} name="SkiErg" description="Rowing-like machine, tests upper body and cardio" />
-            <StationOption rank={2} name="Rowing" description="Full-body powerful pulling motion" />
-            <StationOption rank={3} name="WallBalls" description="Explosive squat and throw movement" />
+            {/* Rank 1 Dropdown */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-600 text-white font-bold text-sm">
+                    1
+                  </div>
+                  <span>Hardest Station (Rank 1)</span>
+                </div>
+              </label>
+              <select
+                value={rank1}
+                onChange={(e) => setRank1(e.target.value)}
+                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+              >
+                <option value="">-- Select a station --</option>
+                {getOptionsForRank(rank1, rank2, rank3).map((station) => (
+                  <option key={station} value={station}>
+                    {station}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Rank 2 Dropdown */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-500 text-white font-bold text-sm">
+                    2
+                  </div>
+                  <span>Second Hardest Station (Rank 2)</span>
+                </div>
+              </label>
+              <select
+                value={rank2}
+                onChange={(e) => setRank2(e.target.value)}
+                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+              >
+                <option value="">-- Select a station --</option>
+                {getOptionsForRank(rank2, rank1, rank3).map((station) => (
+                  <option key={station} value={station}>
+                    {station}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Rank 3 Dropdown */}
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mb-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-400 text-white font-bold text-sm">
+                    3
+                  </div>
+                  <span>Third Hardest Station (Rank 3)</span>
+                </div>
+              </label>
+              <select
+                value={rank3}
+                onChange={(e) => setRank3(e.target.value)}
+                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+              >
+                <option value="">-- Select a station --</option>
+                {getOptionsForRank(rank3, rank1, rank2).map((station) => (
+                  <option key={station} value={station}>
+                    {station}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-900">
-              <strong>Note:</strong> Full onboarding steps are currently being connected. For now, you can{' '}
-              <a href="/dashboard" className="text-blue-600 hover:text-blue-700 font-semibold">
-                go to your dashboard
-              </a>
-              {' '}or{' '}
-              <a href="/predict" className="text-blue-600 hover:text-blue-700 font-semibold">
-                try the predictor
-              </a>
-              .
+              <strong>All 8 HYROX Stations:</strong> SkiErg, Rowing, WallBalls, SledPush, SledPull,
+              BurpeeStationJump, TireFlip, RaftCarry
             </p>
           </div>
 
@@ -56,39 +179,16 @@ export default async function Step1Page() {
             >
               Back
             </a>
-            <a
-              href="/dashboard"
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors text-center"
+            <button
+              onClick={handleSubmit}
+              disabled={loading || !rank1 || !rank2 || !rank3}
+              className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-colors"
             >
-              Continue to Dashboard
-            </a>
+              {loading ? 'Saving...' : 'Continue to Dashboard'}
+            </button>
           </div>
         </div>
       </div>
     </main>
-  );
-}
-
-function StationOption({
-  rank,
-  name,
-  description,
-}: {
-  rank: number;
-  name: string;
-  description: string;
-}) {
-  return (
-    <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-      <div className="flex-shrink-0">
-        <div className="flex items-center justify-center h-8 w-8 rounded-full border-2 border-gray-300">
-          <span className="text-sm font-semibold text-gray-600">{rank}</span>
-        </div>
-      </div>
-      <div className="ml-4">
-        <p className="font-semibold text-gray-900">{name}</p>
-        <p className="text-sm text-gray-600">{description}</p>
-      </div>
-    </label>
   );
 }
