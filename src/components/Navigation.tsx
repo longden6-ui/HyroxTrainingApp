@@ -77,6 +77,9 @@ export default function Navigation() {
               <Link href="/dashboard/calendar" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                 Training Calendar
               </Link>
+              <Link href="/dashboard/training-plan" className={styles.menuItem} onClick={() => setIsOpen(false)}>
+                Full Training Plan
+              </Link>
               <Link href="/onboarding" className={styles.menuItem} onClick={() => setIsOpen(false)}>
                 Onboarding
               </Link>
