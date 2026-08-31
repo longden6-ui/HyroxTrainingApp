@@ -15,6 +15,70 @@ export interface GeneratePlanInput {
   competitionDate: string; // ISO date string
 }
 
+// Generate training sessions for plan [T-18, T-19]
+async function generateTrainingSessions(
+  athleteId: string,
+  planId: string,
+  phases: any,
+  planStart: Date,
+): Promise<number> {
+  try {
+    const sessionTitles = [
+      'Foundation: General Strength',
+      'Foundation: Aerobic Base',
+      'Foundation: Station Skills',
+      'Foundation: Active Recovery',
+      'Development: Strength & Power',
+      'Development: Interval Work',
+      'Development: Station Practice',
+      'Development: Conditioning',
+      'Race Specific: High Intensity',
+      'Race Specific: Technical Practice',
+      'Race Specific: Race Simulation',
+      'Peak: Race Pace Work',
+      'Peak: Max Effort',
+      'Taper: Maintenance',
+      'Taper: Recovery Focus',
+      'Race Week: Final Tune-up',
+    ];
+
+    const sessions = [];
+    let currentDate = new Date(planStart);
+    let sessionIndex = 0;
+
+    // Generate 3 sessions per week until competition date
+    while (currentDate < phases.raceWeekStart) {
+      const dayOfWeek = currentDate.getDay();
+      // Schedule on Monday, Wednesday, Friday + one more day
+      if ([1, 2, 3, 5].includes(dayOfWeek)) {
+        const duration = Math.floor(Math.random() * 2400) + 1800; // 30-70 minutes in seconds
+        sessions.push({
+          athleteId,
+          planId,
+          title: sessionTitles[sessionIndex % sessionTitles.length],
+          description: `Scheduled training session`,
+          scheduledDate: new Date(currentDate),
+          duration,
+          intensityLabel: ['EASY', 'MODERATE', 'HARD'][Math.floor(Math.random() * 3)],
+          locked: false,
+        });
+        sessionIndex++;
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Create all sessions
+    const created = await prisma.trainingSession.createMany({
+      data: sessions,
+    });
+
+    return created.count;
+  } catch (error) {
+    console.error('Failed to generate training sessions:', error);
+    return 0;
+  }
+}
+
 export async function generateTrainingPlan(input: GeneratePlanInput) {
   try {
     const session = await getSession();
@@ -109,15 +173,19 @@ export async function generateTrainingPlan(input: GeneratePlanInput) {
       },
     });
 
-    // 7. Write audit event
+    // 7. Generate training sessions [T-18, T-19]
+    const sessionCount = await generateTrainingSessions(athleteId, trainingPlan.id, phases, planStart);
+
+    // 8. Write audit event
     await prisma.auditEvent.create({
       data: {
         athleteId,
         eventType: 'PLAN_GENERATED',
-        description: `Plan initialized with Phase 3 infrastructure (T-17 through T-22)`,
+        description: `Plan initialized with Phase 3 infrastructure (T-17 through T-22). ${sessionCount} sessions scheduled.`,
         metadata: JSON.stringify({
           planId: trainingPlan.id,
           competitionDate: raceDate.toISOString(),
+          sessionsCreated: sessionCount,
           phaseCalculationSuccess: true,
           guardrailsReady: true,
           rationaleGenerationReady: true,

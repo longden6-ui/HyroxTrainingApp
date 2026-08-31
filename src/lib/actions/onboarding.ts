@@ -12,6 +12,7 @@ import {
   validateStep6,
 } from '../onboarding/schema';
 import { detectRedFlags } from '../safety/red-flag';
+import { generateTrainingPlan } from './planning';
 
 const prisma = new PrismaClient();
 
@@ -257,10 +258,36 @@ export async function submitOnboardingStep6(availabilityByDay: Record<string, nu
       return { success: false, error: 'Not authenticated' };
     }
 
-    return saveOnboardingStep6({
+    // Save onboarding step 6
+    const saveResult = await saveOnboardingStep6({
       athleteId: session.athleteId,
       availabilityByDay,
     });
+
+    if (!saveResult.success) {
+      return saveResult;
+    }
+
+    // Generate training plan with default competition date (8 weeks from now)
+    const competitionDate = new Date();
+    competitionDate.setDate(competitionDate.getDate() + 56); // 8 weeks
+    const competitionDateIso = competitionDate.toISOString().split('T')[0];
+
+    const planResult = await generateTrainingPlan({
+      competitionDate: competitionDateIso,
+    });
+
+    if (!planResult.success) {
+      return { success: false, error: planResult.error };
+    }
+
+    // Activate the plan immediately [FR-A02]
+    await prisma.trainingPlan.update({
+      where: { id: planResult.plan!.id },
+      data: { status: 'ACTIVE' },
+    });
+
+    return { success: true, onboarding: saveResult.onboarding };
   } catch (error) {
     console.error('Submit onboarding step 6 error:', error);
     return { success: false, error: 'Failed to save your information' };
