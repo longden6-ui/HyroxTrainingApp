@@ -26,14 +26,24 @@ export default function Navigation() {
   }, []);
 
   const handleLogout = async () => {
-    // Call logout server action
     try {
       const response = await fetch('/api/auth/logout', { method: 'POST' });
       if (response.ok) {
+        // Close menu
+        setIsOpen(false);
+        // Clear user email from state
+        setUserEmail(null);
+        // Redirect to home and reload to clear cached data
         router.push('/');
+        // Hard refresh to clear all cached user data
+        window.location.href = '/';
+      } else {
+        console.error('Logout failed:', response.statusText);
+        alert('Failed to logout. Please try again.');
       }
     } catch (error) {
       console.error('Logout failed:', error);
+      alert('An error occurred during logout. Please try again.');
     }
   };
 
