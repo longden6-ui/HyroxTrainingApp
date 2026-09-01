@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { getAthleteCalendar, getSessionDetails } from '@/src/lib/actions/calendar';
-import { completeTrainingSession, updateSessionNotes } from '@/src/lib/actions/session-update';
+import { completeTrainingSession, updateSessionNotes, updateCompletionDetails } from '@/src/lib/actions/session-update';
 import { PageLayout } from '@/src/components/layout/PageLayout';
 import { Card } from '@/src/components/layout/Card';
 import { CalendarView } from '@/src/components/athlete/CalendarView';
@@ -19,6 +19,9 @@ export default function CalendarPage() {
   const [sessionDetailsLoading, setSessionDetailsLoading] = useState(false);
   const [sessionNotes, setSessionNotes] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
+  const [editRPE, setEditRPE] = useState<number | null>(null);
+  const [editActualDuration, setEditActualDuration] = useState<number | null>(null);
+  const [isEditingCompletionDetails, setIsEditingCompletionDetails] = useState(false);
 
   const month = searchParams.get('month') ? parseInt(searchParams.get('month')!) : new Date().getMonth();
   const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : new Date().getFullYear();
@@ -94,6 +97,52 @@ export default function CalendarPage() {
       console.error('Failed to save notes:', error);
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  const handleUpdateCompletionDetails = async () => {
+    if (!selectedSession) return;
+
+    if (editRPE === null || editActualDuration === null) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    setIsUpdating(true);
+    try {
+      const result = await updateCompletionDetails(
+        selectedSession.id,
+        editRPE,
+        editActualDuration
+      );
+      if (result.success) {
+        setSelectedSession({
+          ...selectedSession,
+          lastCheckIn: {
+            ...selectedSession.lastCheckIn,
+            rpe: result.rpe,
+            actualMinutes: result.actualMinutes,
+          },
+        });
+        setIsEditingCompletionDetails(false);
+        setEditRPE(null);
+        setEditActualDuration(null);
+      } else {
+        alert(result.error || 'Failed to update completion details');
+      }
+    } catch (error) {
+      console.error('Failed to update completion details:', error);
+      alert('An error occurred while updating completion details');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleEditCompletionDetails = () => {
+    if (selectedSession?.lastCheckIn) {
+      setEditRPE(selectedSession.lastCheckIn.rpe);
+      setEditActualDuration(selectedSession.lastCheckIn.actualMinutes);
+      setIsEditingCompletionDetails(true);
     }
   };
 
@@ -254,14 +303,112 @@ export default function CalendarPage() {
 
               {selectedSession.lastCheckIn && (
                 <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', borderRadius: '0.5rem', padding: '1rem' }}>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#166534', marginBottom: '0.5rem' }}>Completion Details</h3>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#15803d' }}>
-                    <p style={{ margin: 0 }}>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
-                    <p style={{ margin: 0 }}>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
-                    {selectedSession.lastCheckIn.notes && (
-                      <p style={{ margin: 0 }}>Notes: {selectedSession.lastCheckIn.notes}</p>
-                    )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#166534', margin: 0 }}>Completion Details</h3>
+                    <button
+                      onClick={handleEditCompletionDetails}
+                      disabled={isUpdating || isEditingCompletionDetails}
+                      style={{
+                        fontSize: '0.75rem',
+                        padding: '0.25rem 0.5rem',
+                        background: '#16a34a',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.25rem',
+                        cursor: 'pointer',
+                        fontWeight: 500,
+                      }}
+                    >
+                      Edit
+                    </button>
                   </div>
+
+                  {isEditingCompletionDetails ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.25rem' }}>
+                          RPE (1-10)
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={editRPE || ''}
+                          onChange={(e) => setEditRPE(Math.max(1, Math.min(10, parseInt(e.target.value) || 0)))}
+                          style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            border: '1px solid #dcfce7',
+                            borderRadius: '0.25rem',
+                            fontSize: '0.875rem',
+                            boxSizing: 'border-box',
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.25rem' }}>
+                          Actual Duration (minutes)
+                        </label>
+                        <input
+                          type="number"
+                          min="0"
+                          max="600"
+                          value={editActualDuration || ''}
+                          onChange={(e) => setEditActualDuration(Math.max(0, parseInt(e.target.value) || 0))}
+                          style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            border: '1px solid #dcfce7',
+                            borderRadius: '0.25rem',
+                            fontSize: '0.875rem',
+                            boxSizing: 'border-box',
+                          }}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={handleUpdateCompletionDetails}
+                          disabled={isUpdating}
+                          style={{
+                            flex: 1,
+                            padding: '0.5rem',
+                            background: isUpdating ? '#9ca3af' : '#16a34a',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '0.25rem',
+                            fontWeight: 500,
+                            cursor: isUpdating ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          {isUpdating ? 'Saving...' : 'Save'}
+                        </button>
+                        <button
+                          onClick={() => setIsEditingCompletionDetails(false)}
+                          disabled={isUpdating}
+                          style={{
+                            flex: 1,
+                            padding: '0.5rem',
+                            background: '#e5e7eb',
+                            color: '#111827',
+                            border: 'none',
+                            borderRadius: '0.25rem',
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#15803d' }}>
+                      <p style={{ margin: 0 }}>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
+                      <p style={{ margin: 0 }}>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
+                      {selectedSession.lastCheckIn.notes && (
+                        <p style={{ margin: 0 }}>Notes: {selectedSession.lastCheckIn.notes}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 

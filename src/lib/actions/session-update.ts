@@ -109,3 +109,63 @@ export async function updateSessionNotes(sessionId: string, notes: string) {
     return { error: 'Failed to update notes' };
   }
 }
+
+// Update completion details (RPE and Actual Duration) [T-24]
+export async function updateCompletionDetails(
+  sessionId: string,
+  rpe: number,
+  actualDurationMinutes: number
+) {
+  try {
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { error: 'Not authenticated' };
+    }
+
+    // Validate inputs
+    if (rpe < 1 || rpe > 10) {
+      return { error: 'RPE must be between 1 and 10' };
+    }
+    if (actualDurationMinutes < 0 || actualDurationMinutes > 600) {
+      return { error: 'Duration must be between 0 and 600 minutes' };
+    }
+
+    // Verify the session belongs to the authenticated athlete
+    const trainingSession = await prisma.trainingSession.findFirst({
+      where: {
+        id: sessionId,
+        athleteId: session.athleteId,
+      },
+    });
+
+    if (!trainingSession) {
+      return { error: 'Session not found' };
+    }
+
+    // Update check-in with completion details
+    const checkIn = await prisma.sessionCheckIn.upsert({
+      where: { sessionId },
+      update: {
+        rpe,
+        actualDuration: actualDurationMinutes * 60, // Convert to seconds
+      },
+      create: {
+        sessionId,
+        athleteId: session.athleteId,
+        rpe,
+        actualDuration: actualDurationMinutes * 60,
+        completedAt: new Date(),
+        completionStatus: 'COMPLETED',
+      },
+    });
+
+    return {
+      success: true,
+      rpe: checkIn.rpe,
+      actualMinutes: checkIn.actualDuration ? checkIn.actualDuration / 60 : 0,
+    };
+  } catch (error) {
+    console.error('Failed to update completion details:', error);
+    return { error: 'Failed to update completion details' };
+  }
+}
