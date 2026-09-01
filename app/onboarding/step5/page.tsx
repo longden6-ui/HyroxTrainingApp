@@ -55,74 +55,84 @@ export default function Step5Page() {
     }
   };
 
+  if (pageLoading) {
+    return (
+      <main className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.stepIndicator}>
+            <div className={styles.stepNumber}>5</div>
+            <div className={styles.stepMeta}>
+              <label className={styles.label}>Step 5 of 6</label>
+              <h1 className={styles.title}>Equipment Access</h1>
+            </div>
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.container}>
-      <div className="">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
-              5
-            </div>
-            <h1 className="text-4xl font-bold">Equipment Access</h1>
+      <div className={styles.header}>
+        <div className={styles.stepIndicator}>
+          <div className={styles.stepNumber}>5</div>
+          <div className={styles.stepMeta}>
+            <label className={styles.label}>Step 5 of 6</label>
+            <h1 className={styles.title}>Equipment Access</h1>
           </div>
-          <p className="text-purple-100 text-lg">Select all the equipment you have access to. This helps us suggest appropriate workouts and substitutions.</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="mb-8">
-          <a href="/onboarding/step4" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
-            ← Back to Onboarding
-          </a>
-        </div>
+      <div className={styles.breadcrumb}>
+        <a href="/onboarding">← Back to Onboarding</a>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-semibold">{error}</p>
-            </div>
-          )}
+      <div className={styles.content}>
+        {error && <div className={styles.errorBanner}>{error}</div>}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Your Available Equipment</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+            Select all the equipment you have access to. This helps us suggest appropriate workouts and substitutions.
+          </p>
+
+          <div className={styles.checkboxGroup}>
             {EQUIPMENT_OPTIONS.map((equipment) => (
-              <label
-                key={equipment}
-                className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all"
-              >
+              <label key={equipment} className={styles.checkboxItem}>
                 <input
                   type="checkbox"
                   checked={selectedEquipment.includes(equipment)}
                   onChange={() => toggleEquipment(equipment)}
-                  className="w-4 h-4 text-blue-600 rounded"
+                  className={styles.checkbox}
                 />
-                <span className="ml-3 font-semibold text-gray-900">{equipment}</span>
+                <span className={styles.checkboxLabel}>{equipment}</span>
               </label>
             ))}
           </div>
 
-          {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-900">
-              <strong>💡 Why we ask:</strong> Equipment availability affects which exercises we recommend and how
-              we structure your sessions. No equipment? We'll focus on bodyweight and minimal-equipment options.
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+              <strong>💡 Why we ask:</strong> Equipment availability affects which exercises we recommend and how we structure your sessions. No equipment? We'll focus on bodyweight and minimal-equipment options.
             </p>
           </div>
+        </div>
 
-          <div className="mt-8 flex gap-4">
-            <a
-              href="/onboarding/step4"
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
-            >
-              Back
-            </a>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Saving...' : 'Next: Training Availability →'}
-            </button>
-          </div>
+        <div className={styles.actionButtons}>
+          <a href="/onboarding/step4" className={styles.backButton}>
+            ← Back
+          </a>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className={styles.nextButton}
+          >
+            {loading ? 'Saving...' : 'Next: Training Availability →'}
+          </button>
         </div>
       </div>
     </main>

@@ -55,180 +55,177 @@ export default function Step3Page() {
     }
   };
 
+  if (pageLoading) {
+    return (
+      <main className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.stepIndicator}>
+            <div className={styles.stepNumber}>3</div>
+            <div className={styles.stepMeta}>
+              <label className={styles.label}>Step 3 of 6</label>
+              <h1 className={styles.title}>Work Pattern & Physical Demand</h1>
+            </div>
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.container}>
-      <div className="">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
-              3
-            </div>
-            <h1 className="text-4xl font-bold">Work Pattern & Physical Demand</h1>
+      <div className={styles.header}>
+        <div className={styles.stepIndicator}>
+          <div className={styles.stepNumber}>3</div>
+          <div className={styles.stepMeta}>
+            <label className={styles.label}>Step 3 of 6</label>
+            <h1 className={styles.title}>Work Pattern & Physical Demand</h1>
           </div>
-          <p className="text-purple-100 text-lg">Help us understand your work schedule and physical demands so we can plan training around your lifestyle.</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="mb-8">
-          <a href="/onboarding" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
-            ← Back to Onboarding
-          </a>
-        </div>
+      <div className={styles.breadcrumb}>
+        <a href="/onboarding">← Back to Onboarding</a>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-semibold">{error}</p>
+      <div className={styles.content}>
+        {error && <div className={styles.errorBanner}>{error}</div>}
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Your Work & Lifestyle</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+            Help us understand your work schedule and physical demands so we can plan training around your lifestyle.
+          </p>
+
+          <div style={{ marginBottom: '2rem' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+              What is your typical work pattern? *
+            </p>
+            <div className={styles.radioGroup}>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="workPattern"
+                  value="SEDENTARY"
+                  checked={workPattern === 'SEDENTARY'}
+                  onChange={(e) => setWorkPattern(e.target.value)}
+                />
+                <div className={styles.radioItem}>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Sedentary</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mostly sitting (office work, desk job)</p>
+                </div>
+              </label>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="workPattern"
+                  value="LIGHT"
+                  checked={workPattern === 'LIGHT'}
+                  onChange={(e) => setWorkPattern(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Light</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mix of sitting and standing (retail, teaching)</p>
+                </div>
+              </label>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="workPattern"
+                  value="MODERATE"
+                  checked={workPattern === 'MODERATE'}
+                  onChange={(e) => setWorkPattern(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Moderate</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mostly on feet (nursing, construction)</p>
+                </div>
+              </label>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="workPattern"
+                  value="HEAVY"
+                  checked={workPattern === 'HEAVY'}
+                  onChange={(e) => setWorkPattern(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Heavy</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Physically demanding labor (trades, manual work)</p>
+                </div>
+              </label>
             </div>
-          )}
-
-          <div className="space-y-8">
-            {/* Work Pattern */}
-            <fieldset>
-              <legend className="text-sm font-bold text-gray-900 mb-4">
-                <span className="text-red-600">*</span> What is your typical work pattern?
-              </legend>
-              <div className="space-y-3">
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="workPattern"
-                    value="SEDENTARY"
-                    checked={workPattern === 'SEDENTARY'}
-                    onChange={(e) => setWorkPattern(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Sedentary</p>
-                    <p className="text-sm text-gray-600">Mostly sitting (office work, desk job)</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="workPattern"
-                    value="LIGHT"
-                    checked={workPattern === 'LIGHT'}
-                    onChange={(e) => setWorkPattern(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Light</p>
-                    <p className="text-sm text-gray-600">Mix of sitting and standing (retail, teaching)</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="workPattern"
-                    value="MODERATE"
-                    checked={workPattern === 'MODERATE'}
-                    onChange={(e) => setWorkPattern(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Moderate</p>
-                    <p className="text-sm text-gray-600">Mostly on feet (nursing, construction)</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="workPattern"
-                    value="HEAVY"
-                    checked={workPattern === 'HEAVY'}
-                    onChange={(e) => setWorkPattern(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Heavy</p>
-                    <p className="text-sm text-gray-600">Physically demanding labor (trades, manual work)</p>
-                  </div>
-                </label>
-              </div>
-            </fieldset>
-
-            {/* Physical Demand */}
-            <fieldset>
-              <legend className="text-sm font-bold text-gray-900 mb-4">
-                <span className="text-red-600">*</span> What is the typical physical demand of your work?
-              </legend>
-              <div className="space-y-3">
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="physicalDemand"
-                    value="LOW"
-                    checked={physicalDemand === 'LOW'}
-                    onChange={(e) => setPhysicalDemand(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Low</p>
-                    <p className="text-sm text-gray-600">Minimal physical stress or strength required</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="physicalDemand"
-                    value="MODERATE"
-                    checked={physicalDemand === 'MODERATE'}
-                    onChange={(e) => setPhysicalDemand(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">Moderate</p>
-                    <p className="text-sm text-gray-600">Some lifting or sustained effort needed</p>
-                  </div>
-                </label>
-
-                <label className="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all">
-                  <input
-                    type="radio"
-                    name="physicalDemand"
-                    value="HIGH"
-                    checked={physicalDemand === 'HIGH'}
-                    onChange={(e) => setPhysicalDemand(e.target.value)}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <div className="ml-4">
-                    <p className="font-semibold text-gray-900">High</p>
-                    <p className="text-sm text-gray-600">Heavy lifting or intense physical effort daily</p>
-                  </div>
-                </label>
-              </div>
-            </fieldset>
           </div>
 
-          {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-900">
-              <strong>💡 Why we ask:</strong> Understanding your occupational demands helps us manage total training
-              load and prevent overuse injuries.
+          <div>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+              What is the typical physical demand of your work? *
+            </p>
+            <div className={styles.radioGroup}>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="physicalDemand"
+                  value="LOW"
+                  checked={physicalDemand === 'LOW'}
+                  onChange={(e) => setPhysicalDemand(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Low</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Minimal physical stress or strength required</p>
+                </div>
+              </label>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="physicalDemand"
+                  value="MODERATE"
+                  checked={physicalDemand === 'MODERATE'}
+                  onChange={(e) => setPhysicalDemand(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Moderate</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Some lifting or sustained effort needed</p>
+                </div>
+              </label>
+              <label className={styles.radioItem}>
+                <input
+                  type="radio"
+                  name="physicalDemand"
+                  value="HIGH"
+                  checked={physicalDemand === 'HIGH'}
+                  onChange={(e) => setPhysicalDemand(e.target.value)}
+                />
+                <div>
+                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>High</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Heavy lifting or intense physical effort daily</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+              <strong>💡 Why we ask:</strong> Understanding your occupational demands helps us manage total training load and prevent overuse injuries.
             </p>
           </div>
+        </div>
 
-          <div className="mt-8 flex gap-4">
-            <a
-              href="/onboarding/step2"
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
-            >
-              Back
-            </a>
-            <button
-              onClick={handleSubmit}
-              disabled={loading || !workPattern || !physicalDemand}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Saving...' : 'Next: Mobility & Pain →'}
-            </button>
-          </div>
+        <div className={styles.actionButtons}>
+          <a href="/onboarding/step2" className={styles.backButton}>
+            ← Back
+          </a>
+          <button
+            onClick={handleSubmit}
+            disabled={loading || !workPattern || !physicalDemand}
+            className={styles.nextButton}
+          >
+            {loading ? 'Saving...' : 'Next: Mobility & Pain →'}
+          </button>
         </div>
       </div>
     </main>

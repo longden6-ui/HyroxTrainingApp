@@ -62,45 +62,59 @@ export default function Step2Page() {
     }
   };
 
+  if (pageLoading) {
+    return (
+      <main className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.stepIndicator}>
+            <div className={styles.stepNumber}>2</div>
+            <div className={styles.stepMeta}>
+              <label className={styles.label}>Step 2 of 6</label>
+              <h1 className={styles.title}>Athletic Background</h1>
+            </div>
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.container}>
-      {/* Header Section */}
-      <div className="">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
-              2
-            </div>
-            <h1 className="text-4xl font-bold">Athletic Background</h1>
+      <div className={styles.header}>
+        <div className={styles.stepIndicator}>
+          <div className={styles.stepNumber}>2</div>
+          <div className={styles.stepMeta}>
+            <label className={styles.label}>Step 2 of 6</label>
+            <h1 className={styles.title}>Athletic Background</h1>
           </div>
-          <p className="text-purple-100 text-lg">Share your fitness experience and current training volume so we can set realistic progression rates.</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="mb-8">
-          <a href="/onboarding" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
-            ← Back to Onboarding
-          </a>
-        </div>
+      <div className={styles.breadcrumb}>
+        <a href="/onboarding">← Back to Onboarding</a>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-semibold">{error}</p>
-            </div>
-          )}
+      <div className={styles.content}>
+        {error && <div className={styles.errorBanner}>{error}</div>}
 
-          <div className="space-y-6">
-            {/* Athletic Background */}
-            <div>
-              <label className="block text-sm font-bold text-gray-900 mb-3">
-                <span className="text-red-600">*</span> What best describes your athletic background?
-              </label>
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Your Fitness Experience</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+            Share your fitness experience and current training volume so we can set realistic progression rates.
+          </p>
+
+          <div className={styles.formGrid} style={{ gridTemplateColumns: '1fr' }}>
+            <div className={styles.formItem}>
+              <label className={styles.label}>What best describes your athletic background? *</label>
               <select
                 value={athleticBackground}
                 onChange={(e) => setAthleticBackground(e.target.value)}
-                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+                className={styles.select}
               >
                 <option value="">-- Select your background --</option>
                 {ATHLETIC_BACKGROUNDS.map((option) => (
@@ -109,17 +123,14 @@ export default function Step2Page() {
                   </option>
                 ))}
               </select>
-              <p className="text-sm text-gray-600 mt-2">
+              <p className={styles.helpText}>
                 This helps us understand your baseline fitness level and training experience.
               </p>
             </div>
 
-            {/* Weekly Training Load */}
-            <div>
-              <label className="block text-sm font-bold text-gray-900 mb-3">
-                <span className="text-red-600">*</span> Current weekly training load
-              </label>
-              <div className="flex items-center gap-2">
+            <div className={styles.formItem}>
+              <label className={styles.label}>Current weekly training load *</label>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 <input
                   type="number"
                   min="0"
@@ -127,40 +138,35 @@ export default function Step2Page() {
                   value={weeklyLoadMinutes}
                   onChange={(e) => setWeeklyLoadMinutes(e.target.value)}
                   placeholder="e.g., 300"
-                  className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+                  className={styles.input}
+                  style={{ flex: 1 }}
                 />
-                <span className="text-gray-700 font-semibold">minutes/week</span>
+                <span style={{ color: '#6b7280', fontWeight: '500' }}>minutes/week</span>
               </div>
-              <p className="text-sm text-gray-600 mt-2">
-                How many minutes per week do you currently spend training? This includes all structured exercise
-                (running, strength, gym sessions, etc.).
+              <p className={styles.helpText}>
+                How many minutes per week do you currently spend training? This includes all structured exercise (running, strength, gym sessions, etc.).
               </p>
             </div>
           </div>
 
-          {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-900">
-              <strong>💡 Why we ask:</strong> Your fitness experience and current training volume help us set
-              realistic progression rates and avoid overload.
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+              <strong>💡 Why we ask:</strong> Your fitness experience and current training volume help us set realistic progression rates and avoid overload.
             </p>
           </div>
+        </div>
 
-          <div className="mt-8 flex gap-4">
-            <a
-              href="/onboarding/step1"
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
-            >
-              Back
-            </a>
-            <button
-              onClick={handleSubmit}
-              disabled={loading || !athleticBackground || !weeklyLoadMinutes}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Saving...' : 'Next: Work Pattern →'}
-            </button>
-          </div>
+        <div className={styles.actionButtons}>
+          <a href="/onboarding/step1" className={styles.backButton}>
+            ← Back
+          </a>
+          <button
+            onClick={handleSubmit}
+            disabled={loading || !athleticBackground || !weeklyLoadMinutes}
+            className={styles.nextButton}
+          >
+            {loading ? 'Saving...' : 'Next: Work Pattern →'}
+          </button>
         </div>
       </div>
     </main>

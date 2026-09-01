@@ -283,11 +283,18 @@
   cursor: pointer;
 }
 
-.checkboxItem label {
+.checkbox {
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.checkboxLabel {
   flex: 1;
   cursor: pointer;
   margin: 0;
   text-transform: none;
+  font-weight: 500;
+  color: #111827;
 }
 
 .helpText {

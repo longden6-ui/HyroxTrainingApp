@@ -68,88 +68,101 @@ export default function Step6Page() {
 
   const totalMinutes = Object.values(availability).reduce((a, b) => a + b, 0);
 
+  if (pageLoading) {
+    return (
+      <main className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.stepIndicator}>
+            <div className={styles.stepNumber}>6</div>
+            <div className={styles.stepMeta}>
+              <label className={styles.label}>Step 6 of 6</label>
+              <h1 className={styles.title}>Training Availability</h1>
+            </div>
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={styles.container}>
-      <div className="">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">
-              6
-            </div>
-            <h1 className="text-4xl font-bold">Training Availability</h1>
+      <div className={styles.header}>
+        <div className={styles.stepIndicator}>
+          <div className={styles.stepNumber}>6</div>
+          <div className={styles.stepMeta}>
+            <label className={styles.label}>Step 6 of 6</label>
+            <h1 className={styles.title}>Training Availability</h1>
           </div>
-          <p className="text-purple-100 text-lg">Tell us when you can train each day of the week so we can schedule sessions that fit your life.</p>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pb-12">
-        <div className="mb-8">
-          <a href="/onboarding/step5" className="text-purple-600 hover:text-purple-700 font-semibold mb-4 inline-block">
-            ← Back to Onboarding
-          </a>
-        </div>
+      <div className={styles.breadcrumb}>
+        <a href="/onboarding">← Back to Onboarding</a>
+      </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-100">
-          {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 font-semibold">{error}</p>
-            </div>
-          )}
+      <div className={styles.content}>
+        {error && <div className={styles.errorBanner}>{error}</div>}
 
-          <div className="mb-6">
-            <p className="text-sm text-gray-600 mb-4">
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>When Can You Train?</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+            Tell us when you can train each day of the week so we can schedule sessions that fit your life.
+          </p>
+
+          <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
               Enter how many minutes you can dedicate to training each day (0 if unavailable).
             </p>
-            <div className="flex gap-4 items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div>
-                <p className="text-sm font-bold text-blue-900">Total availability per week:</p>
-                <p className="text-2xl font-bold text-blue-600">{totalMinutes} minutes</p>
-              </div>
+            <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>
+              Total availability per week: <strong>{totalMinutes} minutes</strong>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {DAYS.map((day, index) => (
-              <div key={day} className="flex items-center gap-4">
-                <label className="w-24 font-semibold text-gray-900">{DAY_LABELS[index]}</label>
-                <div className="flex-1 flex items-center gap-2">
+              <div key={day} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <label style={{ width: '100px', fontWeight: '600', color: '#111827' }}>
+                  {DAY_LABELS[index]}
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: 1 }}>
                   <input
                     type="number"
                     min="0"
                     max="10000"
                     value={availability[day]}
                     onChange={(e) => handleMinutesChange(day, e.target.value)}
-                    className="flex-1 p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none font-semibold text-gray-900"
+                    className={styles.input}
+                    style={{ flex: 1 }}
                   />
-                  <span className="text-gray-700 font-semibold w-20">minutes</span>
+                  <span style={{ color: '#6b7280', fontWeight: '500', minWidth: '80px' }}>minutes</span>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-900">
-              <strong>💡 Why we ask:</strong> We'll schedule your sessions within the time you've indicated as
-              available. Sessions never get placed when you've marked 0 minutes available. [T-14, US-03]
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+              <strong>💡 Why we ask:</strong> We'll schedule your sessions within the time you've indicated as available. Sessions never get placed when you've marked 0 minutes available. [T-14, US-03]
             </p>
           </div>
+        </div>
 
-          <div className="mt-8 flex gap-4">
-            <a
-              href="/onboarding/step5"
-              className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg transition-colors text-center"
-            >
-              Back
-            </a>
-            <button
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-400 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 disabled:scale-100 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Saving...' : 'Complete Onboarding ✓'}
-            </button>
-          </div>
+        <div className={styles.actionButtons}>
+          <a href="/onboarding/step5" className={styles.backButton}>
+            ← Back
+          </a>
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className={styles.nextButton}
+          >
+            {loading ? 'Saving...' : 'Complete Onboarding ✓'}
+          </button>
         </div>
       </div>
     </main>
