@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { clearSession } from '@/src/lib/auth/session';
 
 export async function POST() {
