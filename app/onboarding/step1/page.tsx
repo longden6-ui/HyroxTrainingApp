@@ -6,14 +6,14 @@ import { submitOnboardingStep1, getCurrentOnboarding } from '@/src/lib/actions/o
 import styles from '../onboarding.module.css';
 
 const STATIONS = [
-  { name: 'SkiErg (1,000m)', id: 'skierg' },
-  { name: 'Sled Push (50m)', id: 'sled_push' },
-  { name: 'Sled Pull (50m)', id: 'sled_pull' },
-  { name: 'Burpee Broad Jumps (80m)', id: 'burpee_jumps' },
-  { name: 'RowErg (1,000m)', id: 'rowerг' },
-  { name: "Farmer's Carry (200m)", id: 'farmers_carry' },
-  { name: 'Sandbag Lunges (100m)', id: 'sandbag_lunges' },
-  { name: 'Wall Balls (100 reps)', id: 'wall_balls' },
+  { name: 'Station 1: 1,000m SkiErg', id: 'skierg' },
+  { name: 'Station 2: 50m Sled Push', id: 'sled_push' },
+  { name: 'Station 3: 50m Sled Pull', id: 'sled_pull' },
+  { name: 'Station 4: 80m Burpee Broad Jumps', id: 'burpee_jumps' },
+  { name: 'Station 5: 1,000m RowErg', id: 'rowerг' },
+  { name: "Station 6: 200m Farmer's Carry", id: 'farmers_carry' },
+  { name: 'Station 7: 100m Sandbag Lunges', id: 'sandbag_lunges' },
+  { name: 'Station 8: 100 Wall Balls', id: 'wall_balls' },
 ];
 
 export default function Step1Page() {

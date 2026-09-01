@@ -96,14 +96,14 @@ const HYROX_EXPERIENCE_OPTIONS = [
 ];
 
 const STATIONS = [
-  { value: 'SkiErg', label: 'SkiErg' },
-  { value: 'Rowing Machine', label: 'Rowing Machine' },
-  { value: 'Wall Balls', label: 'Wall Balls' },
-  { value: 'Tire Flip', label: 'Tire Flip' },
-  { value: 'Rope Climb', label: 'Rope Climb' },
-  { value: 'Rig', label: 'Rig' },
-  { value: 'Sanctum', label: 'Sanctum' },
-  { value: 'Fire Jump', label: 'Fire Jump' },
+  { value: 'skierg', label: 'Station 1: 1,000m SkiErg' },
+  { value: 'sled_push', label: 'Station 2: 50m Sled Push' },
+  { value: 'sled_pull', label: 'Station 3: 50m Sled Pull' },
+  { value: 'burpee_jumps', label: 'Station 4: 80m Burpee Broad Jumps' },
+  { value: 'rowerг', label: 'Station 5: 1,000m RowErg' },
+  { value: 'farmers_carry', label: "Station 6: 200m Farmer's Carry" },
+  { value: 'sandbag_lunges', label: 'Station 7: 100m Sandbag Lunges' },
+  { value: 'wall_balls', label: 'Station 8: 100 Wall Balls' },
 ];
 
 const DisplayField = ({ label, value }: any) => (

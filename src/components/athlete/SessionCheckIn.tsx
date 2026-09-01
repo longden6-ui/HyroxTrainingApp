@@ -218,7 +218,7 @@ export function SessionCheckIn({
             <textarea
               value={substitutions.join(', ')}
               onChange={(e) => setSubstitutions(e.target.value.split(',').map((s) => s.trim()))}
-              placeholder="e.g., Rowed instead of SkiErg; Skipped sled push due to shoulder"
+              placeholder="e.g., Modified RowErg due to shoulder; Skipped Sled Push"
               className={styles.textarea}
               rows={3}
             />
