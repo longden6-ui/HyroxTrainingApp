@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { createPrediction } from '@/src/lib/actions/prediction';
+import { createPrediction, getLatestPrediction } from '@/src/lib/actions/prediction';
 import { validatePredictorInput } from '@/src/lib/predictor/schema';
 import { estimateFinishTime } from '@/src/lib/predictor/estimator';
 import { PredictorResult } from './PredictorResult';
@@ -35,6 +35,31 @@ export function PredictorForm() {
     targetTimeSeconds: '',
     priorHyroxResult: 'NO_PRIOR_RESULT' as const,
   });
+
+  // Load previous prediction on mount for logged-in users
+  useEffect(() => {
+    const loadPreviousPrediction = async () => {
+      const result = await getLatestPrediction();
+      if (result.success && result.prediction) {
+        const pred = result.prediction as any;
+        setFormData({
+          age: pred.age || 35,
+          category: pred.category || 'INDIVIDUAL',
+          division: pred.division || 'MEN_INDIVIDUAL_OPEN',
+          fiveKmTimeMinutes: pred.fiveKmTimeMinutes || 25,
+          fiveKmTimeSeconds: pred.fiveKmTimeSeconds || 0,
+          fiveKmRecency: pred.fiveKmRecency || 'RECENT',
+          weightValue: pred.weightValue || 80,
+          weightUnit: pred.weightUnit || 'kg',
+          competitionDateDays: pred.competitionDateDays || 30,
+          targetTimeMinutes: pred.targetTimeMinutes || '',
+          targetTimeSeconds: pred.targetTimeSeconds || '',
+          priorHyroxResult: pred.priorHyroxResult || 'NO_PRIOR_RESULT',
+        } as any);
+      }
+    };
+    loadPreviousPrediction();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,

@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { PredictorInput, validatePredictorInput } from '../predictor/schema';
 import { estimateFinishTime, validateEstimate } from '../predictor/estimator';
 import { validateRateLimit } from '../ratelimit';
+import { getSession } from '../auth/session';
 import { headers } from 'next/headers';
 
 const prisma = new PrismaClient();
@@ -46,12 +47,16 @@ export async function createPrediction(input: unknown) {
       };
     }
 
+    // Get athleteId if logged in
+    const session = await getSession();
+    const athleteId = session?.athleteId || null;
+
     // Persist prediction [T-08, FR-P06]
-    // athleteId is null for public predictions
+    // athleteId is saved if user is logged in, null for public/anonymous predictions
     try {
       const prediction = await prisma.prediction.create({
         data: {
-          athleteId: null, // Public prediction, unauthenticated
+          athleteId, // Logged-in user's ID, or null for anonymous
 
           // Inputs
           age: predictor.age,
@@ -109,6 +114,62 @@ export async function createPrediction(input: unknown) {
       success: false,
       errors: { _form: 'An error occurred. Please try again.' },
     };
+  }
+}
+
+// Fetch most recent prediction for logged-in user [T-08]
+export async function getLatestPrediction() {
+  try {
+    const session = await getSession();
+    if (!session?.athleteId) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    const latestPrediction = await prisma.prediction.findFirst({
+      where: {
+        athleteId: session.athleteId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!latestPrediction) {
+      return { success: false, error: 'No previous predictions found' };
+    }
+
+    // Detect unit by checking which conversion results in a valid form value (30-200)
+    const asKg = latestPrediction.weightGrams / 1000;
+    const asLb = latestPrediction.weightGrams / 453.592;
+
+    // Form accepts 30-200 for both units, in 0.5 increments
+    // Prefer kg if value is in range, otherwise use lb
+    const isKg = asKg >= 30 && asKg <= 200;
+
+    // Round to nearest 0.5 increment to match form options
+    const rawValue = isKg ? asKg : asLb;
+    const displayWeight = Math.round(rawValue * 2) / 2;
+
+    return {
+      success: true,
+      prediction: {
+        age: latestPrediction.age,
+        category: latestPrediction.category,
+        division: latestPrediction.division,
+        weightValue: displayWeight,
+        weightUnit: isKg ? 'kg' : 'lb',
+        fiveKmTimeMinutes: Math.floor(latestPrediction.fiveKmTimeSeconds / 60),
+        fiveKmTimeSeconds: latestPrediction.fiveKmTimeSeconds % 60,
+        fiveKmRecency: latestPrediction.fiveKmRecency,
+        competitionDateDays: Math.ceil((latestPrediction.competitionDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+        targetTimeMinutes: latestPrediction.targetFinishTime ? Math.floor(latestPrediction.targetFinishTime / 60) : '',
+        targetTimeSeconds: latestPrediction.targetFinishTime ? latestPrediction.targetFinishTime % 60 : '',
+        priorHyroxResult: latestPrediction.priorHyroxResult,
+      },
+    };
+  } catch (error) {
+    console.error('Get latest prediction error:', error);
+    return { success: false, error: 'Failed to fetch previous prediction' };
   }
 }
 
