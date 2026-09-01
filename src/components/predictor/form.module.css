@@ -85,7 +85,8 @@
   gap: 0.5rem;
 }
 
-.time_input input {
+.time_input input,
+.time_input select {
   flex: 1;
   text-align: center;
 }

@@ -185,19 +185,23 @@ export function PredictorForm() {
 
           <fieldset className={styles.fieldset}>
             <label htmlFor="age" className={styles.label}>Age *</label>
-            <input
-              type="number"
+            <select
               id="age"
               name="age"
               value={formData.age}
               onChange={handleInputChange}
-              min="16"
-              max="120"
               required
-              className={styles.input}
+              className={styles.select}
               aria-invalid={!!state.errors.age}
               aria-describedby={state.errors.age ? 'age-error' : undefined}
-            />
+            >
+              <option value="">-- Select Age --</option>
+              {Array.from({ length: 105 }, (_, i) => 16 + i).map((age) => (
+                <option key={age} value={age}>
+                  {age} years old
+                </option>
+              ))}
+            </select>
             {state.errors.age && (
               <span id="age-error" className={styles.error_message}>
                 {state.errors.age}
@@ -250,20 +254,26 @@ export function PredictorForm() {
           <div className={styles.form_row}>
             <fieldset className={styles.fieldset}>
               <label htmlFor="weightValue" className={styles.label}>Weight *</label>
-              <input
-                type="number"
+              <select
                 id="weightValue"
                 name="weightValue"
                 value={formData.weightValue}
                 onChange={handleInputChange}
-                min="30"
-                max="200"
-                step="0.5"
                 required
-                className={styles.input}
+                className={styles.select}
                 aria-invalid={!!state.errors.weightValue}
                 aria-describedby={state.errors.weightValue ? 'weight-error' : undefined}
-              />
+              >
+                <option value="">-- Select Weight --</option>
+                {Array.from({ length: 341 }, (_, i) => {
+                  const weight = 30 + i * 0.5;
+                  return (
+                    <option key={weight} value={weight}>
+                      {weight.toFixed(1)}
+                    </option>
+                  );
+                })}
+              </select>
               {state.errors.weightValue && (
                 <span id="weight-error" className={styles.error_message}>
                   {state.errors.weightValue}
@@ -290,30 +300,37 @@ export function PredictorForm() {
           <fieldset className={styles.fieldset}>
             <label className={styles.label}>Recent 5K Time *</label>
             <div className={styles.time_input}>
-              <input
-                type="number"
+              <select
                 name="fiveKmTimeMinutes"
                 value={formData.fiveKmTimeMinutes}
                 onChange={handleInputChange}
-                min="15"
-                max="60"
-                placeholder="Minutes"
-                aria-label="5K minutes"
                 required
-                className={styles.input}
-              />
+                className={styles.select}
+                aria-label="5K minutes"
+              >
+                <option value="">-- Minutes --</option>
+                {Array.from({ length: 46 }, (_, i) => 15 + i).map((min) => (
+                  <option key={min} value={min}>
+                    {min} min
+                  </option>
+                ))}
+              </select>
               <span>:</span>
-              <input
-                type="number"
+              <select
                 name="fiveKmTimeSeconds"
                 value={String(formData.fiveKmTimeSeconds).padStart(2, '0')}
                 onChange={handleInputChange}
-                min="0"
-                max="59"
-                placeholder="00"
+                required
+                className={styles.select}
                 aria-label="5K seconds"
-                className={styles.input}
-              />
+              >
+                <option value="">-- Seconds --</option>
+                {Array.from({ length: 60 }, (_, i) => i).map((sec) => (
+                  <option key={sec} value={String(sec).padStart(2, '0')}>
+                    {String(sec).padStart(2, '0')} sec
+                  </option>
+                ))}
+              </select>
             </div>
             {state.errors.fiveKmTimeSeconds && (
               <span className={styles.error_message}>{state.errors.fiveKmTimeSeconds}</span>
@@ -346,19 +363,23 @@ export function PredictorForm() {
           <fieldset className={styles.fieldset}>
             <label htmlFor="competitionDateDays" className={styles.label}>HYROX Competition Date *</label>
             <div className={styles.help_text}>How many days away?</div>
-            <input
-              type="number"
+            <select
               id="competitionDateDays"
               name="competitionDateDays"
               value={formData.competitionDateDays}
               onChange={handleInputChange}
-              min="1"
-              max="365"
               required
-              className={styles.input}
+              className={styles.select}
               aria-invalid={!!state.errors.competitionDate}
               aria-describedby={state.errors.competitionDate ? 'date-error' : undefined}
-            />
+            >
+              <option value="">-- Select Days --</option>
+              {Array.from({ length: 365 }, (_, i) => i + 1).map((day) => (
+                <option key={day} value={day}>
+                  {day === 1 ? 'Tomorrow' : `${day} days away`}
+                </option>
+              ))}
+            </select>
             {state.errors.competitionDate && (
               <span id="date-error" className={styles.error_message}>
                 {state.errors.competitionDate}
@@ -369,29 +390,35 @@ export function PredictorForm() {
           <fieldset className={styles.fieldset}>
             <label className={styles.label}>Target Finish Time (optional)</label>
             <div className={styles.time_input}>
-              <input
-                type="number"
+              <select
                 name="targetTimeMinutes"
                 value={formData.targetTimeMinutes}
                 onChange={handleInputChange}
-                min="15"
-                max="240"
-                placeholder="Minutes"
+                className={styles.select}
                 aria-label="Target minutes"
-                className={styles.input}
-              />
+              >
+                <option value="">-- Minutes --</option>
+                {Array.from({ length: 226 }, (_, i) => 15 + i).map((min) => (
+                  <option key={min} value={min}>
+                    {min} min
+                  </option>
+                ))}
+              </select>
               <span>:</span>
-              <input
-                type="number"
+              <select
                 name="targetTimeSeconds"
                 value={String(formData.targetTimeSeconds).padStart(2, '0')}
                 onChange={handleInputChange}
-                min="0"
-                max="59"
-                placeholder="00"
+                className={styles.select}
                 aria-label="Target seconds"
-                className={styles.input}
-              />
+              >
+                <option value="">-- Seconds --</option>
+                {Array.from({ length: 60 }, (_, i) => i).map((sec) => (
+                  <option key={sec} value={String(sec).padStart(2, '0')}>
+                    {String(sec).padStart(2, '0')} sec
+                  </option>
+                ))}
+              </select>
             </div>
             {state.errors.targetFinishTimeSeconds && (
               <span className={styles.error_message}>{state.errors.targetFinishTimeSeconds}</span>
