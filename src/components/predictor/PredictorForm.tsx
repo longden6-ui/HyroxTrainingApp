@@ -179,230 +179,240 @@ export function PredictorForm() {
           </div>
         )}
 
-        <fieldset className={styles.fieldset}>
-          <label htmlFor="age" className={styles.label}>Age *</label>
-          <input
-            type="number"
-            id="age"
-            name="age"
-            value={formData.age}
-            onChange={handleInputChange}
-            min="16"
-            max="120"
-            required
-            className={styles.input}
-            aria-invalid={!!state.errors.age}
-            aria-describedby={state.errors.age ? 'age-error' : undefined}
-          />
-          {state.errors.age && (
-            <span id="age-error" className={styles.error_message}>
-              {state.errors.age}
-            </span>
-          )}
-        </fieldset>
-
-        <div className={styles.form_row}>
-          <fieldset className={styles.fieldset}>
-            <label htmlFor="category" className={styles.label}>Category *</label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              required
-              className={styles.select}
-            >
-              <option value="INDIVIDUAL">Individual</option>
-              <option value="TEAM">Team</option>
-            </select>
-          </fieldset>
+        {/* Personnel Section */}
+        <div className={styles.section}>
+          <h2 className={styles.section_title}>Personnel</h2>
 
           <fieldset className={styles.fieldset}>
-            <label htmlFor="division" className={styles.label}>Division *</label>
-            <select
-              id="division"
-              name="division"
-              value={formData.division}
-              onChange={handleInputChange}
-              required
-              className={styles.select}
-              aria-invalid={!!state.errors.division}
-              aria-describedby={state.errors.division ? 'division-error' : undefined}
-            >
-              <option value="WOMEN_INDIVIDUAL_OPEN">Women Individual Open</option>
-              <option value="MEN_INDIVIDUAL_OPEN">Men Individual Open</option>
-              <option value="WOMEN_INDIVIDUAL_PRO">Women Individual Pro</option>
-              <option value="MEN_INDIVIDUAL_PRO">Men Individual Pro</option>
-              <option value="MIXED_TEAM">Mixed Team</option>
-            </select>
-            {state.errors.division && (
-              <span id="division-error" className={styles.error_message}>
-                {state.errors.division}
-              </span>
-            )}
-          </fieldset>
-        </div>
-
-        <div className={styles.form_row}>
-          <fieldset className={styles.fieldset}>
-            <label htmlFor="weightValue" className={styles.label}>Weight *</label>
+            <label htmlFor="age" className={styles.label}>Age *</label>
             <input
               type="number"
-              id="weightValue"
-              name="weightValue"
-              value={formData.weightValue}
+              id="age"
+              name="age"
+              value={formData.age}
               onChange={handleInputChange}
-              min="30"
-              max="200"
-              step="0.5"
+              min="16"
+              max="120"
               required
               className={styles.input}
-              aria-invalid={!!state.errors.weightValue}
-              aria-describedby={state.errors.weightValue ? 'weight-error' : undefined}
+              aria-invalid={!!state.errors.age}
+              aria-describedby={state.errors.age ? 'age-error' : undefined}
             />
-            {state.errors.weightValue && (
-              <span id="weight-error" className={styles.error_message}>
-                {state.errors.weightValue}
+            {state.errors.age && (
+              <span id="age-error" className={styles.error_message}>
+                {state.errors.age}
               </span>
             )}
           </fieldset>
 
+          <div className={styles.form_row}>
+            <fieldset className={styles.fieldset}>
+              <label htmlFor="category" className={styles.label}>Category *</label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+                className={styles.select}
+              >
+                <option value="INDIVIDUAL">Individual</option>
+                <option value="TEAM">Team</option>
+              </select>
+            </fieldset>
+
+            <fieldset className={styles.fieldset}>
+              <label htmlFor="division" className={styles.label}>Division *</label>
+              <select
+                id="division"
+                name="division"
+                value={formData.division}
+                onChange={handleInputChange}
+                required
+                className={styles.select}
+                aria-invalid={!!state.errors.division}
+                aria-describedby={state.errors.division ? 'division-error' : undefined}
+              >
+                <option value="WOMEN_INDIVIDUAL_OPEN">Women Individual Open</option>
+                <option value="MEN_INDIVIDUAL_OPEN">Men Individual Open</option>
+                <option value="WOMEN_INDIVIDUAL_PRO">Women Individual Pro</option>
+                <option value="MEN_INDIVIDUAL_PRO">Men Individual Pro</option>
+                <option value="MIXED_TEAM">Mixed Team</option>
+              </select>
+              {state.errors.division && (
+                <span id="division-error" className={styles.error_message}>
+                  {state.errors.division}
+                </span>
+              )}
+            </fieldset>
+          </div>
+
+          <div className={styles.form_row}>
+            <fieldset className={styles.fieldset}>
+              <label htmlFor="weightValue" className={styles.label}>Weight *</label>
+              <input
+                type="number"
+                id="weightValue"
+                name="weightValue"
+                value={formData.weightValue}
+                onChange={handleInputChange}
+                min="30"
+                max="200"
+                step="0.5"
+                required
+                className={styles.input}
+                aria-invalid={!!state.errors.weightValue}
+                aria-describedby={state.errors.weightValue ? 'weight-error' : undefined}
+              />
+              {state.errors.weightValue && (
+                <span id="weight-error" className={styles.error_message}>
+                  {state.errors.weightValue}
+                </span>
+              )}
+            </fieldset>
+
+            <fieldset className={styles.fieldset}>
+              <label htmlFor="weightUnit" className={styles.label}>Unit *</label>
+              <select
+                id="weightUnit"
+                name="weightUnit"
+                value={formData.weightUnit}
+                onChange={handleInputChange}
+                required
+                className={styles.select}
+              >
+                <option value="kg">kg</option>
+                <option value="lb">lb</option>
+              </select>
+            </fieldset>
+          </div>
+
           <fieldset className={styles.fieldset}>
-            <label htmlFor="weightUnit" className={styles.label}>Unit *</label>
+            <label className={styles.label}>Recent 5K Time *</label>
+            <div className={styles.time_input}>
+              <input
+                type="number"
+                name="fiveKmTimeMinutes"
+                value={formData.fiveKmTimeMinutes}
+                onChange={handleInputChange}
+                min="15"
+                max="60"
+                placeholder="Minutes"
+                aria-label="5K minutes"
+                required
+                className={styles.input}
+              />
+              <span>:</span>
+              <input
+                type="number"
+                name="fiveKmTimeSeconds"
+                value={String(formData.fiveKmTimeSeconds).padStart(2, '0')}
+                onChange={handleInputChange}
+                min="0"
+                max="59"
+                placeholder="00"
+                aria-label="5K seconds"
+                className={styles.input}
+              />
+            </div>
+            {state.errors.fiveKmTimeSeconds && (
+              <span className={styles.error_message}>{state.errors.fiveKmTimeSeconds}</span>
+            )}
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="fiveKmRecency" className={styles.label}>When did you take this 5K test? *</label>
             <select
-              id="weightUnit"
-              name="weightUnit"
-              value={formData.weightUnit}
+              id="fiveKmRecency"
+              name="fiveKmRecency"
+              value={formData.fiveKmRecency}
               onChange={handleInputChange}
               required
               className={styles.select}
             >
-              <option value="kg">kg</option>
-              <option value="lb">lb</option>
+              <option value="RECENT">Within 30 days</option>
+              <option value="3_MONTHS">30–90 days ago</option>
+              <option value="6_MONTHS">90–180 days ago</option>
+              <option value="STALE">Over 6 months ago</option>
+              <option value="NO_DATA">I haven't taken a recent 5K test</option>
             </select>
           </fieldset>
         </div>
 
-        <fieldset className={styles.fieldset}>
-          <label className={styles.label}>Recent 5K Time *</label>
-          <div className={styles.time_input}>
+        {/* HYROX Info Section */}
+        <div className={styles.section}>
+          <h2 className={styles.section_title}>HYROX Info</h2>
+
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="competitionDateDays" className={styles.label}>HYROX Competition Date *</label>
+            <div className={styles.help_text}>How many days away?</div>
             <input
               type="number"
-              name="fiveKmTimeMinutes"
-              value={formData.fiveKmTimeMinutes}
+              id="competitionDateDays"
+              name="competitionDateDays"
+              value={formData.competitionDateDays}
               onChange={handleInputChange}
-              min="15"
-              max="60"
-              placeholder="Minutes"
-              aria-label="5K minutes"
+              min="1"
+              max="365"
               required
               className={styles.input}
+              aria-invalid={!!state.errors.competitionDate}
+              aria-describedby={state.errors.competitionDate ? 'date-error' : undefined}
             />
-            <span>:</span>
-            <input
-              type="number"
-              name="fiveKmTimeSeconds"
-              value={String(formData.fiveKmTimeSeconds).padStart(2, '0')}
+            {state.errors.competitionDate && (
+              <span id="date-error" className={styles.error_message}>
+                {state.errors.competitionDate}
+              </span>
+            )}
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
+            <label className={styles.label}>Target Finish Time (optional)</label>
+            <div className={styles.time_input}>
+              <input
+                type="number"
+                name="targetTimeMinutes"
+                value={formData.targetTimeMinutes}
+                onChange={handleInputChange}
+                min="15"
+                max="240"
+                placeholder="Minutes"
+                aria-label="Target minutes"
+                className={styles.input}
+              />
+              <span>:</span>
+              <input
+                type="number"
+                name="targetTimeSeconds"
+                value={String(formData.targetTimeSeconds).padStart(2, '0')}
+                onChange={handleInputChange}
+                min="0"
+                max="59"
+                placeholder="00"
+                aria-label="Target seconds"
+                className={styles.input}
+              />
+            </div>
+            {state.errors.targetFinishTimeSeconds && (
+              <span className={styles.error_message}>{state.errors.targetFinishTimeSeconds}</span>
+            )}
+          </fieldset>
+
+          <fieldset className={styles.fieldset}>
+            <label htmlFor="priorHyroxResult" className={styles.label}>Have you done HYROX before?</label>
+            <select
+              id="priorHyroxResult"
+              name="priorHyroxResult"
+              value={formData.priorHyroxResult}
               onChange={handleInputChange}
-              min="0"
-              max="59"
-              placeholder="00"
-              aria-label="5K seconds"
-              className={styles.input}
-            />
-          </div>
-          {state.errors.fiveKmTimeSeconds && (
-            <span className={styles.error_message}>{state.errors.fiveKmTimeSeconds}</span>
-          )}
-        </fieldset>
-
-        <fieldset className={styles.fieldset}>
-          <label htmlFor="fiveKmRecency" className={styles.label}>When did you take this 5K test? *</label>
-          <select
-            id="fiveKmRecency"
-            name="fiveKmRecency"
-            value={formData.fiveKmRecency}
-            onChange={handleInputChange}
-            required
-            className={styles.select}
-          >
-            <option value="RECENT">Within 30 days</option>
-            <option value="3_MONTHS">30–90 days ago</option>
-            <option value="6_MONTHS">90–180 days ago</option>
-            <option value="STALE">Over 6 months ago</option>
-            <option value="NO_DATA">I haven't taken a recent 5K test</option>
-          </select>
-        </fieldset>
-
-        <fieldset className={styles.fieldset}>
-          <label htmlFor="competitionDateDays" className={styles.label}>HYROX Competition Date *</label>
-          <div className={styles.help_text}>How many days away?</div>
-          <input
-            type="number"
-            id="competitionDateDays"
-            name="competitionDateDays"
-            value={formData.competitionDateDays}
-            onChange={handleInputChange}
-            min="1"
-            max="365"
-            required
-            className={styles.input}
-            aria-invalid={!!state.errors.competitionDate}
-            aria-describedby={state.errors.competitionDate ? 'date-error' : undefined}
-          />
-          {state.errors.competitionDate && (
-            <span id="date-error" className={styles.error_message}>
-              {state.errors.competitionDate}
-            </span>
-          )}
-        </fieldset>
-
-        <fieldset className={styles.fieldset}>
-          <label className={styles.label}>Target Finish Time (optional)</label>
-          <div className={styles.time_input}>
-            <input
-              type="number"
-              name="targetTimeMinutes"
-              value={formData.targetTimeMinutes}
-              onChange={handleInputChange}
-              min="15"
-              max="240"
-              placeholder="Minutes"
-              aria-label="Target minutes"
-              className={styles.input}
-            />
-            <span>:</span>
-            <input
-              type="number"
-              name="targetTimeSeconds"
-              value={String(formData.targetTimeSeconds).padStart(2, '0')}
-              onChange={handleInputChange}
-              min="0"
-              max="59"
-              placeholder="00"
-              aria-label="Target seconds"
-              className={styles.input}
-            />
-          </div>
-          {state.errors.targetFinishTimeSeconds && (
-            <span className={styles.error_message}>{state.errors.targetFinishTimeSeconds}</span>
-          )}
-        </fieldset>
-
-        <fieldset className={styles.fieldset}>
-          <label htmlFor="priorHyroxResult" className={styles.label}>Have you done HYROX before?</label>
-          <select
-            id="priorHyroxResult"
-            name="priorHyroxResult"
-            value={formData.priorHyroxResult}
-            onChange={handleInputChange}
-            className={styles.select}
-          >
-            <option value="NO_PRIOR_RESULT">No, first time</option>
-            <option value="COMPLETED">Yes, I completed it</option>
-            <option value="DNF">Yes, but I didn't finish</option>
-          </select>
-        </fieldset>
+              className={styles.select}
+            >
+              <option value="NO_PRIOR_RESULT">No, first time</option>
+              <option value="COMPLETED">Yes, I completed it</option>
+              <option value="DNF">Yes, but I didn't finish</option>
+            </select>
+          </fieldset>
+        </div>
 
         <button type="submit" disabled={state.loading} className={styles.button}>
           {state.loading ? 'Estimating...' : 'Get My Finish Time Estimate'}
