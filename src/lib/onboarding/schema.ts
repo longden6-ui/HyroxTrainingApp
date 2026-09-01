@@ -106,4 +106,7 @@ export const EQUIPMENT_OPTIONS = [
   'Resistance bands',
   'Medicine ball',
   'Gymnastics rings',
+  'SkiErg',
+  'Sandbag',
+  'Sled',
 ];

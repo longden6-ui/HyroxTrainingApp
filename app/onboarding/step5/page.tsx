@@ -101,7 +101,7 @@ export default function Step5Page() {
             Select all the equipment you have access to. This helps us suggest appropriate workouts and substitutions.
           </p>
 
-          <div className={styles.checkboxGroup}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
             {EQUIPMENT_OPTIONS.map((equipment) => (
               <label key={equipment} className={styles.checkboxItem}>
                 <input
