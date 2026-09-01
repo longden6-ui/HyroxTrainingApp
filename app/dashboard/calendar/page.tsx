@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { getAthleteCalendar, getSessionDetails } from '@/src/lib/actions/calendar';
 import { completeTrainingSession, updateSessionNotes } from '@/src/lib/actions/session-update';
+import { PageLayout } from '@/src/components/layout/PageLayout';
+import { Card } from '@/src/components/layout/Card';
 import { CalendarView } from '@/src/components/athlete/CalendarView';
 
 export default function CalendarPage() {
@@ -97,185 +99,238 @@ export default function CalendarPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <p className="text-gray-600">Loading calendar...</p>
-        </div>
-      </main>
+      <PageLayout title="Training Calendar" subtitle="View your personalized HYROX training plan by week">
+        <Card>
+          <p style={{ color: '#6b7280', margin: 0 }}>Loading calendar...</p>
+        </Card>
+      </PageLayout>
     );
   }
 
   if (error) {
     return (
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-4">Training Calendar</h1>
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <p className="text-amber-900">{error}</p>
-          <p className="text-amber-800 text-sm mt-2">
-            Generate a training plan to see your schedule.
-          </p>
-        </div>
-      </div>
+      <PageLayout title="Training Calendar" subtitle="View your personalized HYROX training plan by week">
+        <Card variant="warning">
+          <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600 }}>{error}</p>
+          <p style={{ margin: 0, fontSize: '0.875rem' }}>Generate a training plan to see your schedule.</p>
+        </Card>
+      </PageLayout>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Training Calendar</h1>
-          <p className="text-gray-600">View your personalized HYROX training plan by week</p>
-        </div>
+    <PageLayout title="Training Calendar" subtitle="View your personalized HYROX training plan by week">
+      {calendarData && (
+        <>
+          <CalendarView
+            monthName={calendarData.monthName}
+            weeks={calendarData.weeks}
+            onSessionClick={handleSessionClick}
+          />
 
-        {calendarData && (
-          <>
-            <CalendarView
-              monthName={calendarData.monthName}
-              weeks={calendarData.weeks}
-              onSessionClick={handleSessionClick}
-            />
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button
+              onClick={() => {
+                const prevMonth = month === 0 ? 11 : month - 1;
+                const prevYear = month === 0 ? year - 1 : year;
+                handleNavigate(prevMonth, prevYear);
+              }}
+              style={{
+                padding: '0.5rem 1rem',
+                background: '#f3f4f6',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.5rem',
+                fontWeight: 500,
+                color: '#111827',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = '#e5e7eb')}
+              onMouseOut={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+            >
+              ← Previous Month
+            </button>
 
-            <div className="mt-8 flex justify-between items-center">
+            <span style={{ color: '#6b7280' }}>
+              {new Date(year, month).toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric',
+              })}
+            </span>
+
+            <button
+              onClick={() => {
+                const nextMonth = month === 11 ? 0 : month + 1;
+                const nextYear = month === 11 ? year + 1 : year;
+                handleNavigate(nextMonth, nextYear);
+              }}
+              style={{
+                padding: '0.5rem 1rem',
+                background: '#f3f4f6',
+                border: '1px solid #d1d5db',
+                borderRadius: '0.5rem',
+                fontWeight: 500,
+                color: '#111827',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = '#e5e7eb')}
+              onMouseOut={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+            >
+              Next Month →
+            </button>
+          </div>
+        </>
+      )}
+
+      {selectedSession && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', maxWidth: '42rem', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div style={{ position: 'sticky', top: 0, background: 'linear-gradient(to right, #9333ea, #6b21a8)', color: 'white', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>{selectedSession.title}</h2>
               <button
-                onClick={() => {
-                  const prevMonth = month === 0 ? 11 : month - 1;
-                  const prevYear = month === 0 ? year - 1 : year;
-                  handleNavigate(prevMonth, prevYear);
-                }}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-900 transition-colors"
+                onClick={() => setSelectedSession(null)}
+                style={{ fontSize: '1.5rem', fontWeight: 'bold', background: 'none', border: 'none', color: 'white', cursor: 'pointer', opacity: 0.8, transition: 'opacity 0.2s' }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = '1')}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = '0.8')}
               >
-                ← Previous Month
-              </button>
-
-              <span className="text-gray-600">
-                {new Date(year, month).toLocaleDateString('en-US', {
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </span>
-
-              <button
-                onClick={() => {
-                  const nextMonth = month === 11 ? 0 : month + 1;
-                  const nextYear = month === 11 ? year + 1 : year;
-                  handleNavigate(nextMonth, nextYear);
-                }}
-                className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium text-gray-900 transition-colors"
-              >
-                Next Month →
+                ✕
               </button>
             </div>
-          </>
-        )}
 
-        {selectedSession && (
-          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
-            <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', maxWidth: '42rem', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-              <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6 flex justify-between items-center">
-                <h2 className="text-2xl font-bold">{selectedSession.title}</h2>
-                <button
-                  onClick={() => setSelectedSession(null)}
-                  className="text-2xl font-bold hover:opacity-80 transition-opacity"
-                >
-                  ✕
-                </button>
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Purpose</h3>
+                <p style={{ color: '#111827', margin: 0 }}>{selectedSession.purpose}</p>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-600 mb-1">Purpose</h3>
-                  <p className="text-gray-900">{selectedSession.purpose}</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Duration</h3>
+                  <p style={{ color: '#111827', margin: 0 }}>{Math.round(selectedSession.duration / 60)} minutes</p>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Duration</h3>
-                    <p className="text-gray-900">{Math.round(selectedSession.duration / 60)} minutes</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Intensity</h3>
-                    <p className="text-gray-900">{selectedSession.intensity || 'Not specified'}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Focus</h3>
-                    <p className="text-gray-900">{selectedSession.primaryFocus || 'General'}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Status</h3>
-                    <p className="text-gray-900">{selectedSession.completed ? '✓ Completed' : 'Scheduled'}</p>
-                  </div>
-                </div>
-
-                {selectedSession.equipment && selectedSession.equipment.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-2">Equipment</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedSession.equipment.map((item: string, idx: number) => (
-                        <span
-                          key={idx}
-                          className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {selectedSession.safetyNotes && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-600 mb-1">Safety Notes</h3>
-                    <p className="text-gray-900">{selectedSession.safetyNotes}</p>
-                  </div>
-                )}
-
-                {selectedSession.lastCheckIn && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h3 className="text-sm font-semibold text-green-800 mb-2">Completion Details</h3>
-                    <div className="space-y-2 text-sm text-green-700">
-                      <p>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
-                      <p>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
-                      {selectedSession.lastCheckIn.notes && (
-                        <p>Notes: {selectedSession.lastCheckIn.notes}</p>
-                      )}
-                    </div>
-                  </div>
-                )}
-
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-600 mb-2">Session Notes</h3>
-                  <textarea
-                    value={sessionNotes}
-                    onChange={(e) => setSessionNotes(e.target.value)}
-                    placeholder="Add your thoughts, how you felt, any observations..."
-                    className="w-full border border-gray-300 rounded-lg p-3 text-sm font-sans"
-                    rows={3}
-                  />
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Intensity</h3>
+                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.intensity || 'Not specified'}</p>
                 </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Focus</h3>
+                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.primaryFocus || 'General'}</p>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Status</h3>
+                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.completed ? '✓ Completed' : 'Scheduled'}</p>
+                </div>
+              </div>
 
-                <div className="flex gap-2 pt-2">
-                  {!selectedSession.completed && (
-                    <button
-                      onClick={handleCompleteSession}
-                      disabled={isUpdating}
-                      className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                    >
-                      {isUpdating ? 'Marking...' : '✓ Mark as Completed'}
-                    </button>
-                  )}
+              {selectedSession.equipment && selectedSession.equipment.length > 0 && (
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Equipment</h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {selectedSession.equipment.map((item: string, idx: number) => (
+                      <span
+                        key={idx}
+                        style={{
+                          background: '#f3f4f6',
+                          color: '#374151',
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '9999px',
+                          fontSize: '0.875rem',
+                        }}
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedSession.safetyNotes && (
+                <div>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Safety Notes</h3>
+                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.safetyNotes}</p>
+                </div>
+              )}
+
+              {selectedSession.lastCheckIn && (
+                <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', borderRadius: '0.5rem', padding: '1rem' }}>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#166534', marginBottom: '0.5rem' }}>Completion Details</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#15803d' }}>
+                    <p style={{ margin: 0 }}>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
+                    <p style={{ margin: 0 }}>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
+                    {selectedSession.lastCheckIn.notes && (
+                      <p style={{ margin: 0 }}>Notes: {selectedSession.lastCheckIn.notes}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Session Notes</h3>
+                <textarea
+                  value={sessionNotes}
+                  onChange={(e) => setSessionNotes(e.target.value)}
+                  placeholder="Add your thoughts, how you felt, any observations..."
+                  style={{
+                    width: '100%',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '0.5rem',
+                    padding: '0.75rem',
+                    fontSize: '0.875rem',
+                    fontFamily: 'inherit',
+                    minHeight: '72px',
+                    boxSizing: 'border-box',
+                  }}
+                  rows={3}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.5rem' }}>
+                {!selectedSession.completed && (
                   <button
-                    onClick={handleSaveNotes}
+                    onClick={handleCompleteSession}
                     disabled={isUpdating}
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                    style={{
+                      flex: 1,
+                      background: isUpdating ? '#9ca3af' : '#16a34a',
+                      color: 'white',
+                      fontWeight: 500,
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.5rem',
+                      border: 'none',
+                      cursor: isUpdating ? 'not-allowed' : 'pointer',
+                      transition: 'background-color 0.2s',
+                    }}
+                    onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = '#15803d')}
+                    onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = '#16a34a')}
                   >
-                    {isUpdating ? 'Saving...' : 'Save Notes'}
+                    {isUpdating ? 'Marking...' : '✓ Mark as Completed'}
                   </button>
-                </div>
+                )}
+                <button
+                  onClick={handleSaveNotes}
+                  disabled={isUpdating}
+                  style={{
+                    flex: 1,
+                    background: isUpdating ? '#9ca3af' : '#2563eb',
+                    color: 'white',
+                    fontWeight: 500,
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.5rem',
+                    border: 'none',
+                    cursor: isUpdating ? 'not-allowed' : 'pointer',
+                    transition: 'background-color 0.2s',
+                  }}
+                  onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = '#1d4ed8')}
+                  onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = '#2563eb')}
+                >
+                  {isUpdating ? 'Saving...' : 'Save Notes'}
+                </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
-    </main>
+        </div>
+      )}
+    </PageLayout>
   );
 }

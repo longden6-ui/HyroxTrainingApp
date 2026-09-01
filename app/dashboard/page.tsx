@@ -2,6 +2,9 @@ import { redirect } from 'next/navigation';
 import { getSession } from '@/src/lib/auth/session';
 import { getDashboardData } from '@/src/lib/actions/session';
 import { calculateBurndownMetrics, detectRiskFlags, formatBurndownForDisplay } from '@/src/lib/athlete/burndown';
+import { PageLayout } from '@/src/components/layout/PageLayout';
+import { Card } from '@/src/components/layout/Card';
+import styles from '@/src/components/layout/layout.module.css';
 import { BurndownChart } from '@/src/components/athlete/BurndownChart';
 import { StatusIndicator } from '@/src/components/athlete/StatusIndicator';
 import { RiskFlags } from '@/src/components/athlete/RiskFlags';
@@ -21,13 +24,19 @@ export default async function DashboardPage() {
 
   if (!result.success || !result.data) {
     return (
-      <div className="p-8">
-        <h1 className="text-3xl font-bold mb-4">Training Dashboard</h1>
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <p className="text-amber-900">{result.error || 'Unable to load dashboard'}</p>
-          <p className="text-amber-800 text-sm mt-2">Generate a training plan to see your progress.</p>
-        </div>
-      </div>
+      <PageLayout
+        title="Training Dashboard"
+        subtitle="Your personalized preparation status and progress metrics"
+      >
+        <Card variant="warning">
+          <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600 }}>
+            {result.error || 'Unable to load dashboard'}
+          </p>
+          <p style={{ margin: 0, fontSize: '0.875rem' }}>
+            Generate a training plan to see your progress.
+          </p>
+        </Card>
+      </PageLayout>
     );
   }
 
@@ -64,91 +73,105 @@ export default async function DashboardPage() {
   const formatted = formatBurndownForDisplay(burndown);
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Training Dashboard</h1>
-          <p className="text-gray-600">Your personalized preparation status and progress metrics</p>
-        </div>
+    <PageLayout
+      title="Training Dashboard"
+      subtitle="Your personalized preparation status and progress metrics"
+    >
+      {/* Burn-down Chart */}
+      <BurndownChart
+        sessionsCompleted={metrics.completedSessions}
+        sessionsPlanned={metrics.plannedSessions}
+        minutesCompleted={metrics.completedMinutes}
+        minutesPlanned={metrics.plannedMinutes}
+        daysRemaining={metrics.daysRemaining}
+        weeksRemaining={Math.ceil(metrics.daysRemaining / 7)}
+        currentPhase={metrics.currentPhase}
+      />
 
-        {/* Burn-down Chart */}
-        <BurndownChart
-          sessionsCompleted={metrics.completedSessions}
-          sessionsPlanned={metrics.plannedSessions}
-          minutesCompleted={metrics.completedMinutes}
-          minutesPlanned={metrics.plannedMinutes}
-          daysRemaining={metrics.daysRemaining}
-          weeksRemaining={Math.ceil(metrics.daysRemaining / 7)}
-          currentPhase={metrics.currentPhase}
-        />
+      {/* Status Indicator */}
+      <StatusIndicator
+        status={burndown.preparationStatus as any}
+        explanation={burndown.preparationExplanation}
+        nextSessionDate={formatted.upcomingSession?.date}
+        nextSessionTitle={formatted.upcomingSession?.title}
+      />
 
-        {/* Status Indicator */}
-        <StatusIndicator
-          status={burndown.preparationStatus as any}
-          explanation={burndown.preparationExplanation}
-          nextSessionDate={formatted.upcomingSession?.date}
-          nextSessionTitle={formatted.upcomingSession?.title}
-        />
+      {/* Risk Flags */}
+      <RiskFlags flags={riskFlags} />
 
-        {/* Risk Flags */}
-        <RiskFlags flags={riskFlags} />
-
-        {/* This Week Summary */}
-        <div className="bg-white rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4 text-gray-900">This Week</h2>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{formatted.thisWeek.adherence}</div>
-              <div className="text-sm text-gray-600 mt-1">Adherence</div>
+      {/* This Week Summary */}
+      <Card title="This Week">
+        <div className={styles.grid}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6' }}>
+              {formatted.thisWeek.adherence}
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{formatted.thisWeek.recoveryDays}</div>
-              <div className="text-sm text-gray-600 mt-1">Recovery Days</div>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              Adherence
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">
-                {formatted.progress.sessions.completed}/{formatted.progress.sessions.planned}
-              </div>
-              <div className="text-sm text-gray-600 mt-1">Sessions</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#10b981' }}>
+              {formatted.thisWeek.recoveryDays}
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{formatted.progress.minutes.completed}</div>
-              <div className="text-sm text-gray-600 mt-1">Minutes</div>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              Recovery Days
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#4f46e5' }}>
+              {formatted.progress.sessions.completed}/{formatted.progress.sessions.planned}
+            </div>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              Sessions
+            </div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#a855f7' }}>
+              {formatted.progress.minutes.completed}
+            </div>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              Minutes
             </div>
           </div>
         </div>
+      </Card>
 
-        {/* Recent Changes */}
-        {changes && changes.length > 0 && (
-          <div className="bg-white rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-900">Recent Plan Adjustments</h2>
-            <div className="space-y-3">
-              {changes.map((change: any) => (
-                <div key={change.id} className="border-l-4 border-blue-500 pl-4 py-2">
-                  <div className="font-medium text-gray-900">{change.reason}</div>
-                  <p className="text-sm text-gray-600 mt-1">{change.changesSummary}</p>
-                  <div className="flex gap-2 mt-2">
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      change.material
-                        ? 'bg-orange-100 text-orange-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {change.material ? 'Requires Review' : 'Auto-Applied'}
-                    </span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      change.status === 'PENDING'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {change.status}
-                    </span>
-                  </div>
+      {/* Recent Changes */}
+      {changes && changes.length > 0 && (
+        <Card title="Recent Plan Adjustments">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {changes.map((change: any) => (
+              <div key={change.id} style={{ borderLeft: '4px solid #3b82f6', paddingLeft: '1rem', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+                <div style={{ fontWeight: 500, color: '#111827' }}>{change.reason}</div>
+                <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                  {change.changesSummary}
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  <span style={{
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '0.25rem',
+                    backgroundColor: change.material ? '#fed7aa' : '#dcfce7',
+                    color: change.material ? '#92400e' : '#166534',
+                  }}>
+                    {change.material ? 'Requires Review' : 'Auto-Applied'}
+                  </span>
+                  <span style={{
+                    fontSize: '0.75rem',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '0.25rem',
+                    backgroundColor: change.status === 'PENDING' ? '#fef3c7' : '#dcfce7',
+                    color: change.status === 'PENDING' ? '#92400e' : '#166534',
+                  }}>
+                    {change.status}
+                  </span>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-    </main>
+        </Card>
+      )}
+    </PageLayout>
   );
 }

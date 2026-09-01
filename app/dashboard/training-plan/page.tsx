@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { getFullTrainingPlan } from '@/src/lib/actions/training-plan';
+import { PageLayout } from '@/src/components/layout/PageLayout';
+import { Card } from '@/src/components/layout/Card';
 import styles from './training-plan.module.css';
 
 interface Session {
@@ -59,26 +61,28 @@ export default function FullTrainingPlanPage() {
 
   if (loading) {
     return (
-      <main className={styles.container}>
-        <div className={styles.header}>
-          <h1>Full Training Plan</h1>
-        </div>
-        <div className={styles.loadingMessage}>Loading your training plan...</div>
-      </main>
+      <PageLayout
+        title="Full Training Plan"
+        subtitle="Day-by-day view of your complete training schedule"
+      >
+        <Card>
+          <p style={{ color: '#6b7280', margin: 0 }}>Loading your training plan...</p>
+        </Card>
+      </PageLayout>
     );
   }
 
   if (error) {
     return (
-      <main className={styles.container}>
-        <div className={styles.header}>
-          <h1>Full Training Plan</h1>
-        </div>
-        <div className={styles.errorMessage}>
-          <p>{error}</p>
-          <p className={styles.errorSubtext}>Generate a training plan to see your schedule.</p>
-        </div>
-      </main>
+      <PageLayout
+        title="Full Training Plan"
+        subtitle="Day-by-day view of your complete training schedule"
+      >
+        <Card variant="error">
+          <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600 }}>{error}</p>
+          <p style={{ margin: 0, fontSize: '0.875rem' }}>Generate a training plan to see your schedule.</p>
+        </Card>
+      </PageLayout>
     );
   }
 
@@ -88,17 +92,10 @@ export default function FullTrainingPlanPage() {
   }));
 
   return (
-    <main className={styles.container}>
-      <div className={styles.header}>
-        <h1>Full Training Plan</h1>
-        <p className={styles.subtitle}>Day-by-day view of your complete training schedule</p>
-        {planData && (
-          <p className={styles.stats}>
-            {planData.totalSessions} sessions · Target Race: {new Date(planData.competitionDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-          </p>
-        )}
-      </div>
-
+    <PageLayout
+      title="Full Training Plan"
+      subtitle={planData ? `${planData.totalSessions} sessions · Target Race: ${new Date(planData.competitionDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : 'Day-by-day view of your complete training schedule'}
+    >
       <div className={styles.planList}>
         {daysList.map((day) => (
           <div key={day.dateKey} className={styles.daySection}>
@@ -161,6 +158,6 @@ export default function FullTrainingPlanPage() {
           </div>
         ))}
       </div>
-    </main>
+    </PageLayout>
   );
 }
