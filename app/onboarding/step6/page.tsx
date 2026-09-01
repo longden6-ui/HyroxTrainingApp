@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { submitOnboardingStep6 } from '@/src/lib/actions/onboarding';
+import styles from '../onboarding.module.css';
 
 const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
 const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -50,8 +51,8 @@ export default function Step6Page() {
   const totalMinutes = Object.values(availability).reduce((a, b) => a + b, 0);
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white py-12 px-4 mb-8">
+    <main className={styles.container}>
+      <div className="">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center justify-center h-12 w-12 rounded-full bg-white bg-opacity-20 text-white font-bold text-lg">

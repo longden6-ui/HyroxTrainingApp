@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { getSession } from '@/src/lib/auth/session';
+import styles from './onboarding.module.css';
 
 export const metadata = {
   title: 'Onboarding - HYROX Coach AI',
@@ -13,18 +14,25 @@ export default async function OnboardingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Welcome to HYROX Coach AI</h1>
-          <p className="text-xl text-gray-600 mb-2">Let's build your personalized training plan</p>
-          <p className="text-gray-500">Complete these 6 quick steps to get started</p>
+    <main className={styles.container}>
+      <div className={styles.header}>
+        <h1>Onboarding</h1>
+        <p className={styles.subtitle}>Complete these 6 quick steps to get your personalized training plan</p>
+      </div>
+
+      <div className={styles.content}>
+        {/* Info Box */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Welcome to HYROX Coach AI</h2>
+          <p style={{ marginBottom: '1rem' }}>
+            Let's build your personalized training plan. Your answers help us create a program that fits your unique needs, schedule, and goals. This takes about 5-10 minutes.
+          </p>
         </div>
 
         {/* Steps Overview */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="space-y-4">
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Training Plan Steps</h2>
+          <div className={styles.radioGroup}>
             <StepCard number={1} title="Rank Your Hardest Stations" description="Tell us which HYROX stations challenge you most" link="/onboarding/step1" />
             <StepCard number={2} title="Athletic Background" description="Share your fitness experience and weekly training load" link="/onboarding/step2" />
             <StepCard number={3} title="Work Pattern" description="Describe your work demands and physical requirements" link="/onboarding/step3" />
@@ -34,20 +42,9 @@ export default async function OnboardingPage() {
           </div>
         </div>
 
-        {/* Info Box */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-          <h3 className="font-bold text-blue-900 mb-2">💡 Why we ask this</h3>
-          <p className="text-blue-800">
-            Your answers help us create a training plan that fits your unique needs, schedule, and goals. This takes about 5-10 minutes.
-          </p>
-        </div>
-
         {/* Get Started Button */}
-        <div className="text-center mt-12">
-          <a
-            href="/onboarding/step1"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition-colors"
-          >
+        <div className={styles.actionButtons}>
+          <a href="/onboarding/step1" className={styles.nextButton} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             Start Building Your Plan →
           </a>
         </div>
@@ -70,20 +67,19 @@ function StepCard({
   return (
     <a
       href={link}
-      className="flex items-start p-4 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-blue-200"
+      className={styles.radioItem}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}
     >
-      <div className="flex-shrink-0">
-        <div className="flex items-center justify-center h-10 w-10 rounded-full bg-blue-600 text-white font-bold text-lg">
+      <div style={{ display: 'flex', alignItems: 'flex-start', flex: 1 }}>
+        <div className={styles.stepNumber} style={{ minWidth: '2.5rem', width: '2.5rem', height: '2.5rem', marginRight: '1rem' }}>
           {number}
         </div>
+        <div>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', margin: '0 0 0.5rem 0' }}>{title}</h3>
+          <p style={{ fontSize: '0.95rem', color: '#6b7280', margin: 0 }}>{description}</p>
+        </div>
       </div>
-      <div className="ml-4">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <p className="mt-1 text-gray-600">{description}</p>
-      </div>
-      <div className="ml-auto">
-        <span className="text-2xl text-gray-400">→</span>
-      </div>
+      <div style={{ marginLeft: '1rem', color: '#667eea', fontSize: '1.5rem' }}>→</div>
     </a>
   );
 }
