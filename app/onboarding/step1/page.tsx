@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep1 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep1, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import styles from '../onboarding.module.css';
 
 const STATIONS = [
@@ -23,6 +23,26 @@ export default function Step1Page() {
   const [rank3, setRank3] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding) {
+          setRank1(result.onboarding.stationRank1 || '');
+          setRank2(result.onboarding.stationRank2 || '');
+          setRank3(result.onboarding.stationRank3 || '');
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const handleSubmit = async () => {
     if (!rank1 || !rank2 || !rank3) {
@@ -55,6 +75,27 @@ export default function Step1Page() {
   const getOptionsForRank = (currentRank: string, otherRank1: string, otherRank2: string) => {
     return STATIONS.filter((s) => s.id !== otherRank1 && s.id !== otherRank2);
   };
+
+  if (pageLoading) {
+    return (
+      <main className={styles.container}>
+        <div className={styles.header}>
+          <div className={styles.stepIndicator}>
+            <div className={styles.stepNumber}>1</div>
+            <div className={styles.stepMeta}>
+              <label className={styles.label}>Step 1 of 6</label>
+              <h1 className={styles.title}>Rank Your Hardest Stations</h1>
+            </div>
+          </div>
+        </div>
+        <div className={styles.content}>
+          <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className={styles.container}>

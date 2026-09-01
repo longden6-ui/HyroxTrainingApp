@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep2 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep2, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import { ATHLETIC_BACKGROUNDS } from '@/src/lib/onboarding/schema';
 import styles from '../onboarding.module.css';
 
@@ -12,6 +12,25 @@ export default function Step2Page() {
   const [weeklyLoadMinutes, setWeeklyLoadMinutes] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding) {
+          setAthleticBackground(result.onboarding.athleticBackground || '');
+          setWeeklyLoadMinutes(result.onboarding.currentWeeklyLoadMinutes?.toString() || '');
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const handleSubmit = async () => {
     if (!athleticBackground || !weeklyLoadMinutes) {

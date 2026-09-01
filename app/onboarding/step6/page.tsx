@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep6 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep6, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import styles from '../onboarding.module.css';
 
 const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
@@ -21,6 +21,24 @@ export default function Step6Page() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding && result.onboarding.availabilityByDay) {
+          setAvailability(result.onboarding.availabilityByDay);
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const handleMinutesChange = (day: string, minutes: string) => {
     const value = parseInt(minutes, 10);

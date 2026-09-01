@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep3 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep3, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import styles from '../onboarding.module.css';
 
 export default function Step3Page() {
@@ -11,6 +11,25 @@ export default function Step3Page() {
   const [physicalDemand, setPhysicalDemand] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding) {
+          setWorkPattern(result.onboarding.workPattern || '');
+          setPhysicalDemand(result.onboarding.physicalDemand || '');
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const handleSubmit = async () => {
     if (!workPattern || !physicalDemand) {

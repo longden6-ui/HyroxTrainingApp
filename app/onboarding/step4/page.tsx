@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep4 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep4, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import styles from '../onboarding.module.css';
 
 export default function Step4Page() {
@@ -12,6 +12,26 @@ export default function Step4Page() {
   const [painDetails, setPainDetails] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding) {
+          setMobilityStatus(result.onboarding.mobilityStatus || 'UNRESTRICTED');
+          setActivePain(result.onboarding.activePain || false);
+          setPainDetails(result.onboarding.painDetails || '');
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const handleSubmit = async () => {
     setLoading(true);

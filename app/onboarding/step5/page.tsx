@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { submitOnboardingStep5 } from '@/src/lib/actions/onboarding';
+import { submitOnboardingStep5, getCurrentOnboarding } from '@/src/lib/actions/onboarding';
 import { EQUIPMENT_OPTIONS } from '@/src/lib/onboarding/schema';
 import styles from '../onboarding.module.css';
 
@@ -11,6 +11,24 @@ export default function Step5Page() {
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(true);
+
+  // Load existing onboarding data on mount
+  useEffect(() => {
+    const loadOnboarding = async () => {
+      try {
+        const result = await getCurrentOnboarding();
+        if (result.success && result.onboarding && result.onboarding.equipment) {
+          setSelectedEquipment(result.onboarding.equipment || []);
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding data:', err);
+      } finally {
+        setPageLoading(false);
+      }
+    };
+    loadOnboarding();
+  }, []);
 
   const toggleEquipment = (item: string) => {
     setSelectedEquipment((prev) =>
