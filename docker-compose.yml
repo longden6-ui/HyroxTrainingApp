@@ -1,22 +1,70 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: hyrox-postgres
+    container_name: hyrox_postgres
     environment:
-      POSTGRES_USER: hyrox_user
-      POSTGRES_PASSWORD: hyrox_password
-      POSTGRES_DB: hyrox_db
+      POSTGRES_USER: ${DB_USER:-hyrox_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hyrox_password}
+      POSTGRES_DB: ${DB_NAME:-hyrox_db}
     ports:
-      - '5432:5432'
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U hyrox_user -d hyrox_db']
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-hyrox_user}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hyrox_network
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hyrox_app
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-hyrox_user}:${DB_PASSWORD:-hyrox_password}@postgres:5432/${DB_NAME:-hyrox_db}
+      NODE_ENV: ${NODE_ENV:-production}
+      NEXT_PUBLIC_APP_URL: ${APP_URL:-http://localhost:3000}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./app:/app/app
+      - ./prisma:/app/prisma
+    networks:
+      - hyrox_network
+    command: >
+      sh -c "npm run db:push && npm start"
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: hyrox_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@hyrox.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    depends_on:
+      - postgres
+    networks:
+      - hyrox_network
+    profiles:
+      - debug
 
 volumes:
   postgres_data:
+    driver: local
+
+networks:
+  hyrox_network:
+    driver: bridge
