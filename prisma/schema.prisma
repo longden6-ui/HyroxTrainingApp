@@ -43,6 +43,16 @@ model Athlete {
   // Safety flags
   redFlag           Boolean  @default(false)
 
+  // MFA
+  mfaEnabled        Boolean  @default(false)
+  mfaPending        Boolean  @default(false)
+  mfaSecret         String?               // AES-256-GCM encrypted TOTP secret
+  mfaBackupCodes    String[]              // bcrypt-hashed backup codes (10 slots)
+
+  // Password reset
+  passwordResetTokenHash  String?   // SHA-256 hash of the emailed reset token
+  passwordResetExpiresAt  DateTime?
+
   // Relationships
   predictions       Prediction[]
   onboarding        Onboarding?
@@ -58,6 +68,7 @@ model Athlete {
 
   @@index([email])
   @@index([createdAt])
+  @@index([mfaEnabled])
 }
 
 // Predictions (public, unauthenticated)

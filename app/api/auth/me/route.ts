@@ -13,7 +13,7 @@ export async function GET() {
 
     const athlete = await prisma.athlete.findUnique({
       where: { id: session.athleteId },
-      select: { id: true, email: true, firstName: true, lastName: true },
+      select: { id: true, email: true, firstName: true, lastName: true, mfaEnabled: true },
     });
 
     await prisma.$disconnect();
@@ -27,6 +27,7 @@ export async function GET() {
       email: athlete.email,
       firstName: athlete.firstName,
       lastName: athlete.lastName,
+      mfaEnabled: athlete.mfaEnabled,
     });
   } catch (error) {
     console.error('Failed to get user:', error);

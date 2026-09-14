@@ -1,0 +1,119 @@
+/* MfaDisable.module.css */
+
+.panel {
+  background: var(--mfa-surface, #FFFFFF);
+  border: 1px solid var(--mfa-border, #E0E2EA);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.panelHeader {
+  margin-bottom: 20px;
+}
+
+.panelStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mfa-text, #1A1D26);
+  margin-bottom: 8px;
+}
+
+.panelStatus strong {
+  font-weight: 700;
+}
+
+.activeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16A34A;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18);
+}
+
+.panelDesc {
+  font-size: 13.5px;
+  color: var(--mfa-text-muted, #6A728A);
+  line-height: 1.55;
+}
+
+.panelActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.disableBtn {
+  padding: 9px 18px;
+  border-radius: 7px;
+  background: none;
+  border: 1.5px solid var(--mfa-error, #DC2626);
+  color: var(--mfa-error, #DC2626);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.disableBtn:hover {
+  background: var(--mfa-error-bg, #FEF2F2);
+}
+
+/* Confirm state */
+.confirmTitle {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mfa-text, #1A1D26);
+  margin-bottom: 8px;
+}
+
+.confirmDesc {
+  font-size: 13.5px;
+  color: var(--mfa-text-muted, #6A728A);
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.otpWrap {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: var(--mfa-error, #DC2626);
+  margin-bottom: 4px;
+}
+
+.loadingMsg {
+  font-size: 13px;
+  color: var(--mfa-text-muted, #6A728A);
+}
+
+.cancelBtn {
+  padding: 9px 18px;
+  background: none;
+  border: 1px solid var(--mfa-border, #D1D5DB);
+  border-radius: 7px;
+  font-size: 13.5px;
+  color: var(--mfa-text-muted, #6A728A);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  border-color: var(--mfa-text-muted, #9CA3AF);
+  color: var(--mfa-text, #1A1D26);
+}
+
+.cancelBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+

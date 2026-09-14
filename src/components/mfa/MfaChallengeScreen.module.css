@@ -1,0 +1,174 @@
+/* MfaChallengeScreen.module.css */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 16px;
+  background: var(--mfa-bg, #F4F5F8);
+}
+
+.card {
+  background: var(--mfa-surface, #FFFFFF);
+  border: 1px solid var(--mfa-border, #E0E2EA);
+  border-radius: 14px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.iconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--mfa-accent-dim, rgba(207, 81, 22, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.title {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--mfa-text, #1A1D26);
+  margin-bottom: 8px;
+  text-wrap: balance;
+}
+
+.body {
+  font-size: 14px;
+  color: var(--mfa-text-muted, #6A728A);
+  line-height: 1.55;
+  margin-bottom: 28px;
+}
+
+.otpWrap {
+  margin-bottom: 16px;
+}
+
+.errorMsg {
+  font-size: 13px;
+  color: var(--mfa-error, #DC2626);
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+.loadingMsg {
+  font-size: 13px;
+  color: var(--mfa-text-muted, #6A728A);
+  margin-top: 10px;
+}
+
+.switchLink {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--mfa-accent, #CF5116);
+  background: none;
+  border: none;
+  padding: 4px 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity 0.15s;
+}
+
+.switchLink:hover {
+  opacity: 0.75;
+}
+
+/* Backup code form */
+.backupForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.backupInput {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--mfa-border, #D1D5DB);
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--mfa-text, #1A1D26);
+  background: var(--mfa-input-bg, #FFFFFF);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-transform: uppercase;
+}
+
+.backupInput:focus {
+  border-color: var(--mfa-accent, #CF5116);
+  box-shadow: 0 0 0 3px rgba(207, 81, 22, 0.15);
+}
+
+.backupInputError {
+  border-color: var(--mfa-error, #DC2626);
+}
+
+.submitBtn {
+  padding: 11px 20px;
+  border-radius: 8px;
+  background: var(--mfa-accent, #CF5116);
+  color: #FFFFFF;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitBtn:not(:disabled):hover {
+  opacity: 0.88;
+}
+
+.codeHint {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 12px;
+  background: var(--mfa-code-bg, #ECEDF2);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--mfa-border, #E0E2EA);
+  margin: 24px 0 16px;
+}
+
+.cancelLink {
+  font-size: 13px;
+  color: var(--mfa-text-muted, #6A728A);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.15s;
+}
+
+.cancelLink:hover:not(:disabled) {
+  color: var(--mfa-text, #1A1D26);
+}
+
+.cancelLink:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 440px) {
+  .card { padding: 32px 20px; }
+}

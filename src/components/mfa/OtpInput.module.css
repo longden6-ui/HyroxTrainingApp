@@ -1,0 +1,72 @@
+/* OtpInput.module.css */
+
+.root {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.box {
+  width: 48px;
+  height: 56px;
+  border: 1.5px solid var(--mfa-border, #D1D5DB);
+  border-radius: 8px;
+  background: var(--mfa-input-bg, #FFFFFF);
+  color: var(--mfa-text, #111827);
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  text-align: center;
+  caret-color: transparent;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  outline: none;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+.box:focus {
+  border-color: var(--mfa-accent, #CF5116);
+  box-shadow: 0 0 0 3px var(--mfa-accent-glow, rgba(207, 81, 22, 0.18));
+}
+
+.box.filled {
+  border-color: var(--mfa-border-filled, #9CA3AF);
+  background: var(--mfa-input-filled-bg, #F9FAFB);
+}
+
+/* Error state */
+.error .box {
+  border-color: var(--mfa-error, #DC2626);
+  background: var(--mfa-error-bg, #FEF2F2);
+  animation: shake 0.35s ease;
+}
+
+.error .box:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+}
+
+/* Disabled */
+.disabled .box {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .box {
+    width: 40px;
+    height: 48px;
+    font-size: 20px;
+  }
+  .root {
+    gap: 7px;
+  }
+}
