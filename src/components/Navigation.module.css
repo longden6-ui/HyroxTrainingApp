@@ -86,7 +86,7 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
+  background: var(--color-surface);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   min-width: 280px;
@@ -107,7 +107,7 @@
 
 .menuSection {
   padding: 1rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .menuSection:last-child {
@@ -119,7 +119,7 @@
   margin: 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #667eea;
+  color: var(--color-brand);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -128,7 +128,7 @@
   display: block;
   width: 100%;
   padding: 0.75rem 1rem;
-  color: #333;
+  color: var(--color-text);
   text-decoration: none;
   background: none;
   border: none;
@@ -139,19 +139,19 @@
 }
 
 .menuItem:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-secondary);
   padding-left: 1.25rem;
-  color: #667eea;
+  color: var(--color-brand);
 }
 
 .logoutButton {
-  color: #dc2626;
+  color: var(--color-error-text);
   font-weight: 500;
 }
 
 .logoutButton:hover {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
 }
 
 @media (max-width: 768px) {

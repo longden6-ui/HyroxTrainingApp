@@ -476,17 +476,17 @@ export function PredictorForm() {
         <div style={{
           marginTop: '2rem',
           padding: '1.5rem',
-          backgroundColor: '#f0f4ff',
+          backgroundColor: 'var(--color-bg-secondary)',
           borderRadius: '8px',
-          borderLeft: '4px solid #667eea',
+          borderLeft: '4px solid var(--color-brand)',
         }}>
-          <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: '#666' }}>
+          <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
             📊 Live estimate as you type:
           </p>
-          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#667eea', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-brand)', marginBottom: '0.5rem' }}>
             {Math.floor(state.liveEstimate.lowSeconds / 60)}:{String(state.liveEstimate.lowSeconds % 60).padStart(2, '0')} – {Math.floor(state.liveEstimate.highSeconds / 60)}:{String(state.liveEstimate.highSeconds % 60).padStart(2, '0')}
           </div>
-          <div style={{ fontSize: '0.9rem', color: '#666' }}>
+          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>
             Confidence: {Math.round(state.liveEstimate.confidence * 100)}%
           </div>
         </div>

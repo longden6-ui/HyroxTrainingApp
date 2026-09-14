@@ -76,7 +76,7 @@ export default function Step2Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -104,7 +104,7 @@ export default function Step2Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Your Fitness Experience</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Share your fitness experience and current training volume so we can set realistic progression rates.
           </p>
 
@@ -141,7 +141,7 @@ export default function Step2Page() {
                   className={styles.input}
                   style={{ flex: 1 }}
                 />
-                <span style={{ color: '#6b7280', fontWeight: '500' }}>minutes/week</span>
+                <span style={{ color: 'var(--color-text-secondary)', fontWeight: '500' }}>minutes/week</span>
               </div>
               <p className={styles.helpText}>
                 How many minutes per week do you currently spend training? This includes all structured exercise (running, strength, gym sessions, etc.).
@@ -149,8 +149,8 @@ export default function Step2Page() {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>💡 Why we ask:</strong> Your fitness experience and current training volume help us set realistic progression rates and avoid overload.
             </p>
           </div>

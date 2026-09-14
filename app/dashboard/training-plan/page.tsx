@@ -51,12 +51,12 @@ export default function FullTrainingPlanPage() {
 
   const getIntensityColor = (intensity: string) => {
     const colors: Record<string, string> = {
-      EASY: '#059669',
-      MODERATE: '#f59e0b',
-      HARD: '#dc2626',
-      RACE_PACE: '#7c3aed',
+      EASY: 'var(--color-success-text)',
+      MODERATE: 'var(--color-warning-text)',
+      HARD: 'var(--color-error-text)',
+      RACE_PACE: 'var(--color-intensity-race)',
     };
-    return colors[intensity] || '#6b7280';
+    return colors[intensity] || 'var(--color-text-secondary)';
   };
 
   if (loading) {
@@ -66,7 +66,7 @@ export default function FullTrainingPlanPage() {
         subtitle="Day-by-day view of your complete training schedule"
       >
         <Card>
-          <p style={{ color: '#6b7280', margin: 0 }}>Loading your training plan...</p>
+          <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Loading your training plan...</p>
         </Card>
       </PageLayout>
     );

@@ -1,6 +1,6 @@
 .workoutContainer {
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
   overflow: hidden;
@@ -8,8 +8,8 @@
 }
 
 .workoutContainer.completed {
-  border-color: #10b981;
-  background: #f0fdf4;
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
 }
 
 .header {
@@ -17,17 +17,17 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .workoutContainer.completed .header {
-  border-bottom-color: #10b981;
+  border-bottom-color: var(--color-success);
 }
 
 .header:hover {
-  background: #f9fafb;
+  background: var(--color-bg);
 }
 
 .intensityIndicator {
@@ -45,12 +45,12 @@
 .title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text);
   margin: 0 0 0.25rem 0;
 }
 
 .purpose {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -59,7 +59,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   cursor: pointer;
   padding: 0;
   flex-shrink: 0;
@@ -67,7 +67,7 @@
 }
 
 .expandButton:hover {
-  color: #6b7280;
+  color: var(--color-text-secondary);
 }
 
 .metadata {
@@ -75,8 +75,8 @@
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .metaItem {
@@ -88,13 +88,13 @@
 .metaLabel {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
 .metaValue {
   font-size: 0.875rem;
-  color: #111827;
+  color: var(--color-text);
   font-weight: 500;
 }
 
@@ -103,7 +103,7 @@
   align-items: center;
   justify-content: center;
   padding: 0.25rem 0.75rem;
-  background: #3b82f6;
+  background: var(--color-info);
   color: white;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -113,13 +113,13 @@
 
 .intensityGuidance {
   padding: 1rem 1.5rem;
-  background: #eff6ff;
-  border-left: 4px solid #3b82f6;
+  background: var(--color-info-bg);
+  border-left: 4px solid var(--color-info);
   margin-bottom: 1rem;
 }
 
 .guidanceText {
-  color: #1e40af;
+  color: var(--color-info-text);
   font-size: 0.875rem;
   margin: 0;
 }
@@ -127,11 +127,11 @@
 .sectionTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text);
   text-transform: uppercase;
   margin: 0 0 0.75rem 0;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .equipment {
@@ -145,8 +145,8 @@
 }
 
 .equipmentTag {
-  background: #dbeafe;
-  color: #1e40af;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
   padding: 0.375rem 0.75rem;
   border-radius: 0.25rem;
   font-size: 0.875rem;
@@ -158,8 +158,8 @@
 }
 
 .segment {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   padding: 1rem;
   margin-bottom: 0.75rem;
@@ -175,18 +175,18 @@
 
 .segmentPhase {
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text);
   font-size: 0.875rem;
 }
 
 .segmentTime {
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--color-info-text);
   font-size: 0.875rem;
 }
 
 .segmentDesc {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   margin: 0;
   grid-column: 1 / -1;
@@ -194,11 +194,11 @@
 
 .substitutions {
   padding: 0 1.5rem 1rem 1.5rem;
-  background: #fffbeb;
+  background: var(--color-warning-bg);
   margin: 1rem 1.5rem 0 1.5rem;
   padding: 1rem;
   border-radius: 0.375rem;
-  border-left: 4px solid #f59e0b;
+  border-left: 4px solid var(--color-warning);
 }
 
 .substitutionNote {
@@ -206,14 +206,14 @@
 }
 
 .substitutionWarning {
-  color: #92400e;
+  color: var(--color-warning-text);
   font-size: 0.875rem;
   margin: 0;
 }
 
 .substitution {
-  background: white;
-  border: 1px solid #fde68a;
+  background: var(--color-surface);
+  border: 1px solid var(--color-warning-border);
   border-radius: 0.375rem;
   padding: 0.75rem;
   margin-bottom: 0.75rem;
@@ -224,7 +224,7 @@
 }
 
 .subOriginal {
-  color: #111827;
+  color: var(--color-text);
   font-size: 0.875rem;
   margin: 0 0 0.25rem 0;
 }
@@ -234,13 +234,13 @@
 }
 
 .subExplanation {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   margin: 0.25rem 0;
 }
 
 .subAlt {
-  color: #6b7280;
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   margin: 0.25rem 0 0 0;
   font-style: italic;
@@ -256,11 +256,11 @@
 }
 
 .safetyNote {
-  background: #fef2f2;
-  border-left: 4px solid #dc2626;
+  background: var(--color-error-bg);
+  border-left: 4px solid var(--color-error);
   padding: 0.75rem;
   margin-bottom: 0.75rem;
-  color: #991b1b;
+  color: var(--color-error-text);
   font-size: 0.875rem;
   border-radius: 0 0.25rem 0.25rem 0;
 }
@@ -271,8 +271,8 @@
 
 .actions {
   padding: 1.5rem;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 
 .completeButton,
@@ -289,27 +289,27 @@
 }
 
 .completeButton {
-  background: #10b981;
+  background: var(--color-success);
   color: white;
   margin-right: 0.75rem;
 }
 
 .completeButton:hover {
-  background: #059669;
+  background: var(--color-success-text);
 }
 
 .abortButton {
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--color-border);
+  color: var(--color-text);
 }
 
 .abortButton:hover {
-  background: #d1d5db;
+  background: var(--color-border-strong);
 }
 
 .completionForm {
-  background: #f0fdf4;
-  border: 1px solid #86efac;
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
   border-radius: 0.375rem;
   padding: 1.5rem;
   margin-bottom: 1rem;
@@ -327,7 +327,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text);
   margin-bottom: 0.5rem;
 }
 
@@ -341,7 +341,7 @@
   flex: 1;
   height: 8px;
   border-radius: 4px;
-  background: #e5e7eb;
+  background: var(--color-border);
   outline: none;
   -webkit-appearance: none;
   appearance: none;
@@ -353,7 +353,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--color-success);
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -362,7 +362,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--color-success);
   cursor: pointer;
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -371,13 +371,13 @@
 .rpeValue {
   font-size: 1.125rem;
   font-weight: 700;
-  color: #10b981;
+  color: var(--color-success-text);
   min-width: 3rem;
 }
 
 .rpeHint {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0.5rem 0 0 0;
 }
 
@@ -385,10 +385,11 @@
 .textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-strong);
   border-radius: 0.375rem;
   font-size: 0.875rem;
   font-family: inherit;
+  background-color: var(--color-surface);
 }
 
 .numberInput {
@@ -398,17 +399,17 @@
 .numberInput:focus,
 .textarea:focus {
   outline: none;
-  border-color: #10b981;
+  border-color: var(--color-success);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .textarea {
   resize: vertical;
-  color: #111827;
+  color: var(--color-text);
 }
 
 .textarea::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
 }
 
 .completionActions {
@@ -417,29 +418,29 @@
 }
 
 .confirmButton {
-  background: #10b981;
+  background: var(--color-success);
   color: white;
   flex: 1;
 }
 
 .confirmButton:hover {
-  background: #059669;
+  background: var(--color-success-text);
 }
 
 .cancelButton {
-  background: #e5e7eb;
-  color: #111827;
+  background: var(--color-border);
+  color: var(--color-text);
   flex: 0;
 }
 
 .cancelButton:hover {
-  background: #d1d5db;
+  background: var(--color-border-strong);
 }
 
 .completedBadge {
-  background: #ecfdf5;
-  border: 1px solid #86efac;
-  color: #065f46;
+  background: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success-text);
   padding: 0.75rem 1rem;
   border-radius: 0.375rem;
   font-size: 0.875rem;

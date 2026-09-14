@@ -69,7 +69,7 @@ export default function Step5Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -97,7 +97,7 @@ export default function Step5Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Your Available Equipment</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Select all the equipment you have access to. This helps us suggest appropriate workouts and substitutions.
           </p>
 
@@ -115,8 +115,8 @@ export default function Step5Page() {
             ))}
           </div>
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>💡 Why we ask:</strong> Equipment availability affects which exercises we recommend and how we structure your sessions. No equipment? We'll focus on bodyweight and minimal-equipment options.
             </p>
           </div>

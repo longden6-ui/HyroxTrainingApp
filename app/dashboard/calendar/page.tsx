@@ -150,7 +150,7 @@ export default function CalendarPage() {
     return (
       <PageLayout title="Training Calendar" subtitle="View your personalized HYROX training plan by week">
         <Card>
-          <p style={{ color: '#6b7280', margin: 0 }}>Loading calendar...</p>
+          <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Loading calendar...</p>
         </Card>
       </PageLayout>
     );
@@ -186,21 +186,21 @@ export default function CalendarPage() {
               }}
               style={{
                 padding: '0.5rem 1rem',
-                background: '#f3f4f6',
-                border: '1px solid #d1d5db',
+                background: 'var(--color-bg-secondary)',
+                border: '1px solid var(--color-border-strong)',
                 borderRadius: '0.5rem',
                 fontWeight: 500,
-                color: '#111827',
+                color: 'var(--color-text)',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s',
               }}
-              onMouseOver={(e) => (e.currentTarget.style.background = '#e5e7eb')}
-              onMouseOut={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+              onMouseOver={(e) => (e.currentTarget.style.background = 'var(--color-border)')}
+              onMouseOut={(e) => (e.currentTarget.style.background = 'var(--color-bg-secondary)')}
             >
               ← Previous Month
             </button>
 
-            <span style={{ color: '#6b7280' }}>
+            <span style={{ color: 'var(--color-text-secondary)' }}>
               {new Date(year, month).toLocaleDateString('en-US', {
                 month: 'long',
                 year: 'numeric',
@@ -215,16 +215,16 @@ export default function CalendarPage() {
               }}
               style={{
                 padding: '0.5rem 1rem',
-                background: '#f3f4f6',
-                border: '1px solid #d1d5db',
+                background: 'var(--color-bg-secondary)',
+                border: '1px solid var(--color-border-strong)',
                 borderRadius: '0.5rem',
                 fontWeight: 500,
-                color: '#111827',
+                color: 'var(--color-text)',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s',
               }}
-              onMouseOver={(e) => (e.currentTarget.style.background = '#e5e7eb')}
-              onMouseOut={(e) => (e.currentTarget.style.background = '#f3f4f6')}
+              onMouseOver={(e) => (e.currentTarget.style.background = 'var(--color-border)')}
+              onMouseOut={(e) => (e.currentTarget.style.background = 'var(--color-bg-secondary)')}
             >
               Next Month →
             </button>
@@ -234,7 +234,7 @@ export default function CalendarPage() {
 
       {selectedSession && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', zIndex: 50 }}>
-          <div style={{ backgroundColor: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', maxWidth: '42rem', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ backgroundColor: 'var(--color-surface)', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', maxWidth: '42rem', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ position: 'sticky', top: 0, background: 'linear-gradient(to right, #9333ea, #6b21a8)', color: 'white', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>{selectedSession.title}</h2>
               <button
@@ -249,39 +249,39 @@ export default function CalendarPage() {
 
             <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
-                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Purpose</h3>
-                <p style={{ color: '#111827', margin: 0 }}>{selectedSession.purpose}</p>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Purpose</h3>
+                <p style={{ color: 'var(--color-text)', margin: 0 }}>{selectedSession.purpose}</p>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Duration</h3>
-                  <p style={{ color: '#111827', margin: 0 }}>{Math.round(selectedSession.duration / 60)} minutes</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Duration</h3>
+                  <p style={{ color: 'var(--color-text)', margin: 0 }}>{Math.round(selectedSession.duration / 60)} minutes</p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Intensity</h3>
-                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.intensity || 'Not specified'}</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Intensity</h3>
+                  <p style={{ color: 'var(--color-text)', margin: 0 }}>{selectedSession.intensity || 'Not specified'}</p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Focus</h3>
-                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.primaryFocus || 'General'}</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Focus</h3>
+                  <p style={{ color: 'var(--color-text)', margin: 0 }}>{selectedSession.primaryFocus || 'General'}</p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Status</h3>
-                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.completed ? '✓ Completed' : 'Scheduled'}</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Status</h3>
+                  <p style={{ color: 'var(--color-text)', margin: 0 }}>{selectedSession.completed ? '✓ Completed' : 'Scheduled'}</p>
                 </div>
               </div>
 
               {selectedSession.equipment && selectedSession.equipment.length > 0 && (
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Equipment</h3>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Equipment</h3>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                     {selectedSession.equipment.map((item: string, idx: number) => (
                       <span
                         key={idx}
                         style={{
-                          background: '#f3f4f6',
-                          color: '#374151',
+                          background: 'var(--color-bg-secondary)',
+                          color: 'var(--color-text-secondary)',
                           padding: '0.25rem 0.75rem',
                           borderRadius: '9999px',
                           fontSize: '0.875rem',
@@ -296,22 +296,22 @@ export default function CalendarPage() {
 
               {selectedSession.safetyNotes && (
                 <div>
-                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.25rem' }}>Safety Notes</h3>
-                  <p style={{ color: '#111827', margin: 0 }}>{selectedSession.safetyNotes}</p>
+                  <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.25rem' }}>Safety Notes</h3>
+                  <p style={{ color: 'var(--color-text)', margin: 0 }}>{selectedSession.safetyNotes}</p>
                 </div>
               )}
 
               {selectedSession.lastCheckIn && (
-                <div style={{ background: '#f0fdf4', border: '1px solid #dcfce7', borderRadius: '0.5rem', padding: '1rem' }}>
+                <div style={{ background: 'var(--color-success-bg)', border: '1px solid var(--color-success-border)', borderRadius: '0.5rem', padding: '1rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#166534', margin: 0 }}>Completion Details</h3>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-success-text)', margin: 0 }}>Completion Details</h3>
                     <button
                       onClick={handleEditCompletionDetails}
                       disabled={isUpdating || isEditingCompletionDetails}
                       style={{
                         fontSize: '0.75rem',
                         padding: '0.25rem 0.5rem',
-                        background: '#16a34a',
+                        background: 'var(--color-success)',
                         color: 'white',
                         border: 'none',
                         borderRadius: '0.25rem',
@@ -326,7 +326,7 @@ export default function CalendarPage() {
                   {isEditingCompletionDetails ? (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.25rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-success-text)', marginBottom: '0.25rem' }}>
                           RPE (1-10)
                         </label>
                         <input
@@ -338,7 +338,7 @@ export default function CalendarPage() {
                           style={{
                             width: '100%',
                             padding: '0.5rem',
-                            border: '1px solid #dcfce7',
+                            border: '1px solid var(--color-success-border)',
                             borderRadius: '0.25rem',
                             fontSize: '0.875rem',
                             boxSizing: 'border-box',
@@ -346,7 +346,7 @@ export default function CalendarPage() {
                         />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#166534', marginBottom: '0.25rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-success-text)', marginBottom: '0.25rem' }}>
                           Actual Duration (minutes)
                         </label>
                         <input
@@ -358,7 +358,7 @@ export default function CalendarPage() {
                           style={{
                             width: '100%',
                             padding: '0.5rem',
-                            border: '1px solid #dcfce7',
+                            border: '1px solid var(--color-success-border)',
                             borderRadius: '0.25rem',
                             fontSize: '0.875rem',
                             boxSizing: 'border-box',
@@ -372,7 +372,7 @@ export default function CalendarPage() {
                           style={{
                             flex: 1,
                             padding: '0.5rem',
-                            background: isUpdating ? '#9ca3af' : '#16a34a',
+                            background: isUpdating ? 'var(--color-text-tertiary)' : 'var(--color-success)',
                             color: 'white',
                             border: 'none',
                             borderRadius: '0.25rem',
@@ -388,8 +388,8 @@ export default function CalendarPage() {
                           style={{
                             flex: 1,
                             padding: '0.5rem',
-                            background: '#e5e7eb',
-                            color: '#111827',
+                            background: 'var(--color-border)',
+                            color: 'var(--color-text)',
                             border: 'none',
                             borderRadius: '0.25rem',
                             fontWeight: 500,
@@ -401,7 +401,7 @@ export default function CalendarPage() {
                       </div>
                     </div>
                   ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: '#15803d' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--color-success-text)' }}>
                       <p style={{ margin: 0 }}>RPE: {selectedSession.lastCheckIn.rpe}/10</p>
                       <p style={{ margin: 0 }}>Actual Duration: {selectedSession.lastCheckIn.actualMinutes} minutes</p>
                       {selectedSession.lastCheckIn.notes && (
@@ -413,20 +413,22 @@ export default function CalendarPage() {
               )}
 
               <div>
-                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: '#6b7280', marginBottom: '0.5rem' }}>Session Notes</h3>
+                <h3 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>Session Notes</h3>
                 <textarea
                   value={sessionNotes}
                   onChange={(e) => setSessionNotes(e.target.value)}
                   placeholder="Add your thoughts, how you felt, any observations..."
                   style={{
                     width: '100%',
-                    border: '1px solid #d1d5db',
+                    border: '1px solid var(--color-border-strong)',
                     borderRadius: '0.5rem',
                     padding: '0.75rem',
                     fontSize: '0.875rem',
                     fontFamily: 'inherit',
                     minHeight: '72px',
                     boxSizing: 'border-box',
+                    backgroundColor: 'var(--color-surface)',
+                    color: 'var(--color-text)',
                   }}
                   rows={3}
                 />
@@ -439,7 +441,7 @@ export default function CalendarPage() {
                     disabled={isUpdating}
                     style={{
                       flex: 1,
-                      background: isUpdating ? '#9ca3af' : '#16a34a',
+                      background: isUpdating ? 'var(--color-text-tertiary)' : 'var(--color-success)',
                       color: 'white',
                       fontWeight: 500,
                       padding: '0.5rem 1rem',
@@ -448,8 +450,8 @@ export default function CalendarPage() {
                       cursor: isUpdating ? 'not-allowed' : 'pointer',
                       transition: 'background-color 0.2s',
                     }}
-                    onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = '#15803d')}
-                    onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = '#16a34a')}
+                    onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = 'var(--color-success-text)')}
+                    onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = 'var(--color-success)')}
                   >
                     {isUpdating ? 'Marking...' : '✓ Mark as Completed'}
                   </button>
@@ -459,7 +461,7 @@ export default function CalendarPage() {
                   disabled={isUpdating}
                   style={{
                     flex: 1,
-                    background: isUpdating ? '#9ca3af' : '#2563eb',
+                    background: isUpdating ? 'var(--color-text-tertiary)' : 'var(--color-info)',
                     color: 'white',
                     fontWeight: 500,
                     padding: '0.5rem 1rem',
@@ -468,8 +470,8 @@ export default function CalendarPage() {
                     cursor: isUpdating ? 'not-allowed' : 'pointer',
                     transition: 'background-color 0.2s',
                   }}
-                  onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = '#1d4ed8')}
-                  onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = '#2563eb')}
+                  onMouseOver={(e) => !isUpdating && (e.currentTarget.style.background = 'var(--color-info-text)')}
+                  onMouseOut={(e) => !isUpdating && (e.currentTarget.style.background = 'var(--color-info)')}
                 >
                   {isUpdating ? 'Saving...' : 'Save Notes'}
                 </button>

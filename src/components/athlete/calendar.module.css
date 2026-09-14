@@ -7,10 +7,7 @@
   --color-race-week: #7c3aed;
   --color-session: #6366f1;
   --color-rest: #9ca3af;
-  --color-background: #f9fafb;
-  --color-border: #e5e7eb;
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
+  --color-background: var(--color-bg);
 
   padding: 2rem;
   background: var(--color-background);
@@ -43,7 +40,7 @@
 }
 
 .weekCard {
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   padding: 1.5rem;
@@ -148,22 +145,22 @@
 }
 
 .dayCell:hover {
-  background: #f3f4f6;
+  background: var(--color-bg-secondary);
   border-color: var(--color-session);
 }
 
 .dayCell.withSession {
-  background: #fef3f2;
+  background: var(--color-info-bg);
   border-color: var(--color-session);
 }
 
 .dayCell.restDay {
-  background: #f3f4f6;
+  background: var(--color-bg-secondary);
   opacity: 0.7;
 }
 
 .dayCell.completed {
-  background: #ecfdf5;
+  background: var(--color-success-bg);
   border-color: var(--color-development);
 }
 
@@ -251,7 +248,7 @@
   display: flex;
   gap: 2rem;
   padding: 1.5rem;
-  background: white;
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 0.5rem;
 }

@@ -1,3 +1,113 @@
+:root {
+  --color-bg: #f9fafb;
+  --color-bg-secondary: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-brand: #667eea;
+  --color-brand-secondary: #764ba2;
+  --color-link: #4f46e5;
+
+  --color-success: #059669;
+  --color-success-text: #047857;
+  --color-success-bg: #ecfdf5;
+  --color-success-border: #86efac;
+
+  --color-warning: #f59e0b;
+  --color-warning-text: #b45309;
+  --color-warning-bg: #fef3c7;
+  --color-warning-border: #fde68a;
+
+  --color-error: #dc2626;
+  --color-error-text: #dc2626;
+  --color-error-bg: #fee2e2;
+  --color-error-border: #fecaca;
+
+  --color-info: #3b82f6;
+  --color-info-text: #1d4ed8;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+
+  --color-accent-violet: #a855f7;
+  --color-intensity-race: #7c3aed;
+
+  /* MFA sub-brand — see src/components/mfa/*.module.css */
+  --mfa-bg: #f4f5f8;
+  --mfa-surface: #ffffff;
+  --mfa-surface-2: #f0f1f5;
+  --mfa-border: #e0e2ea;
+  --mfa-border-filled: #9ca3af;
+  --mfa-text: #1a1d26;
+  --mfa-text-muted: #6a728a;
+  --mfa-mono: #353a4f;
+  --mfa-accent: #cf5116;
+  --mfa-accent-dim: rgba(207, 81, 22, 0.08);
+  --mfa-accent-glow: rgba(207, 81, 22, 0.18);
+  --mfa-error: #dc2626;
+  --mfa-error-bg: #fef2f2;
+  --mfa-input-bg: #ffffff;
+  --mfa-input-filled-bg: #f9fafb;
+  --mfa-code-bg: #ecedf2;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #111827;
+  --color-bg-secondary: #0b0f19;
+  --color-surface: #1f2937;
+  --color-text: #f9fafb;
+  --color-text-secondary: #d1d5db;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #374151;
+  --color-border-strong: #4b5563;
+  --color-brand: #667eea;
+  --color-brand-secondary: #764ba2;
+  --color-link: #818cf8;
+
+  --color-success: #34d399;
+  --color-success-text: #34d399;
+  --color-success-bg: #052e16;
+  --color-success-border: #15803d;
+
+  --color-warning: #fbbf24;
+  --color-warning-text: #fbbf24;
+  --color-warning-bg: #451a03;
+  --color-warning-border: #92400e;
+
+  --color-error: #f87171;
+  --color-error-text: #f87171;
+  --color-error-bg: #1c0000;
+  --color-error-border: #7f1d1d;
+
+  --color-info: #60a5fa;
+  --color-info-text: #60a5fa;
+  --color-info-bg: #0c1e3d;
+  --color-info-border: #1e40af;
+
+  --color-accent-violet: #c084fc;
+  --color-intensity-race: #a78bfa;
+
+  /* MFA sub-brand */
+  --mfa-bg: #0e1117;
+  --mfa-surface: #181c28;
+  --mfa-surface-2: #1f2334;
+  --mfa-border: #2c3149;
+  --mfa-border-filled: #4b5563;
+  --mfa-text: #dddfe8;
+  --mfa-text-muted: #a8b0c8;
+  --mfa-mono: #a8b0c8;
+  --mfa-accent: #cf5116;
+  --mfa-accent-dim: rgba(207, 81, 22, 0.16);
+  --mfa-accent-glow: rgba(207, 81, 22, 0.28);
+  --mfa-error: #f87171;
+  --mfa-error-bg: #1c0000;
+  --mfa-input-bg: #1f2334;
+  --mfa-input-filled-bg: #1a1d28;
+  --mfa-code-bg: #1a1e2c;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -8,8 +118,9 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  background-color: #fff;
-  color: #333;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 main {
@@ -17,7 +128,7 @@ main {
 }
 
 a {
-  color: #667eea;
+  color: var(--color-link);
   text-decoration: none;
 }
 
@@ -49,6 +160,6 @@ button {
 
 /* Focus visible for keyboard navigation */
 :focus-visible {
-  outline: 2px solid #667eea;
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }

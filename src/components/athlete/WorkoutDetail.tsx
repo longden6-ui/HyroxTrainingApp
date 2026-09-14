@@ -32,19 +32,19 @@ interface WorkoutDetailProps {
 
 const intensityGuidance: Record<string, { color: string; description: string }> = {
   EASY: {
-    color: '#10b981',
+    color: 'var(--color-success-text)',
     description: 'Easy pace - should be able to hold a conversation',
   },
   MODERATE: {
-    color: '#3b82f6',
+    color: 'var(--color-info-text)',
     description: 'Moderate intensity - breathing elevated but controlled',
   },
   HARD: {
-    color: '#f59e0b',
+    color: 'var(--color-warning-text)',
     description: 'Hard effort - can only speak in short phrases',
   },
   RACE_PACE: {
-    color: '#dc2626',
+    color: 'var(--color-intensity-race)',
     description: 'Race pace - maximum sustainable effort',
   },
 };

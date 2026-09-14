@@ -67,12 +67,12 @@ export function PredictorResult({ result, onReset }: ResultProps) {
                   width: `${confidencePercent}%`,
                   backgroundColor:
                     confidencePercent >= 80
-                      ? '#4caf50'
+                      ? 'var(--color-success)'
                       : confidencePercent >= 60
-                        ? '#2196f3'
+                        ? 'var(--color-info)'
                         : confidencePercent >= 40
-                          ? '#ff9800'
-                          : '#f44336',
+                          ? 'var(--color-warning)'
+                          : 'var(--color-error)',
                 }}
               />
             </div>

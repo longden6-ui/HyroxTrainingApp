@@ -66,7 +66,7 @@ export default function Step4Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -94,12 +94,12 @@ export default function Step4Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Your Physical Limitations</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Help us understand any physical limitations so we can adapt your training safely.
           </p>
 
           <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
               Mobility Status
             </p>
             <div className={styles.radioGroup}>
@@ -112,8 +112,8 @@ export default function Step4Page() {
                   onChange={(e) => setMobilityStatus(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Unrestricted</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Full range of motion, no limitations</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Unrestricted</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Full range of motion, no limitations</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -125,15 +125,15 @@ export default function Step4Page() {
                   onChange={(e) => setMobilityStatus(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Limited Mobility</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Some restricted movements or range limitations</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Limited Mobility</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Some restricted movements or range limitations</p>
                 </div>
               </label>
             </div>
           </div>
 
           <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
               Do you currently experience any pain?
             </p>
             <div className={styles.radioGroup}>
@@ -149,8 +149,8 @@ export default function Step4Page() {
                   }}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>No current pain</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>I'm pain-free or manage minor discomfort well</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>No current pain</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>I'm pain-free or manage minor discomfort well</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -162,8 +162,8 @@ export default function Step4Page() {
                   onChange={() => setActivePain(true)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Yes, I experience pain</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>I have ongoing or recurring pain concerns</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Yes, I experience pain</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>I have ongoing or recurring pain concerns</p>
                 </div>
               </label>
             </div>
@@ -179,20 +179,21 @@ export default function Step4Page() {
                 style={{
                   width: '100%',
                   padding: '0.75rem',
-                  border: '1px solid #d1d5db',
+                  border: '1px solid var(--color-border-strong)',
                   borderRadius: '0.5rem',
                   fontFamily: 'inherit',
                   fontSize: '1rem',
                   minHeight: '96px',
                   fontWeight: '500',
-                  color: '#111827'
+                  color: 'var(--color-text)',
+                  backgroundColor: 'var(--color-surface)'
                 }}
               />
             </div>
           )}
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>💡 Why we ask:</strong> Understanding your mobility and any pain helps us create safe modifications and prevent aggravating existing issues.
             </p>
           </div>

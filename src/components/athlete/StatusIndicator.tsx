@@ -12,22 +12,22 @@ interface StatusIndicatorProps {
 const statusConfig: Record<string, { icon: string; color: string; label: string }> = {
   ON_TRACK: {
     icon: '✓',
-    color: '#10b981',
+    color: 'var(--color-success-text)',
     label: 'On Track',
   },
   AHEAD: {
     icon: '↗',
-    color: '#059669',
+    color: 'var(--color-success-text)',
     label: 'Ahead of Schedule',
   },
   BEHIND: {
     icon: '⚠',
-    color: '#f59e0b',
+    color: 'var(--color-warning-text)',
     label: 'Behind Schedule',
   },
   AT_RISK: {
     icon: '!',
-    color: '#dc2626',
+    color: 'var(--color-error-text)',
     label: 'At Risk',
   },
 };

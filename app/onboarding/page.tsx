@@ -75,11 +75,11 @@ function StepCard({
           {number}
         </div>
         <div>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', margin: '0 0 0.5rem 0' }}>{title}</h3>
-          <p style={{ fontSize: '0.95rem', color: '#6b7280', margin: 0 }}>{description}</p>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--color-text)', margin: '0 0 0.5rem 0' }}>{title}</h3>
+          <p style={{ fontSize: '0.95rem', color: 'var(--color-text-secondary)', margin: 0 }}>{description}</p>
         </div>
       </div>
-      <div style={{ marginLeft: '1rem', color: '#667eea', fontSize: '1.5rem' }}>→</div>
+      <div style={{ marginLeft: '1rem', color: 'var(--color-brand)', fontSize: '1.5rem' }}>→</div>
     </a>
   );
 }

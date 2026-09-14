@@ -16,15 +16,15 @@ interface RiskFlagsProps {
 
 const severityConfig: Record<string, { color: string; label: string }> = {
   LOW: {
-    color: '#3b82f6',
+    color: 'var(--color-info-text)',
     label: 'Low Priority',
   },
   MEDIUM: {
-    color: '#f59e0b',
+    color: 'var(--color-warning-text)',
     label: 'Medium Priority',
   },
   HIGH: {
-    color: '#dc2626',
+    color: 'var(--color-error-text)',
     label: 'High Priority',
   },
 };

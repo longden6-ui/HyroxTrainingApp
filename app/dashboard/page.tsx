@@ -103,34 +103,34 @@ export default async function DashboardPage() {
       <Card title="This Week">
         <div className={styles.grid}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#3b82f6' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'var(--color-info-text)' }}>
               {formatted.thisWeek.adherence}
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
               Adherence
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#10b981' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'var(--color-success-text)' }}>
               {formatted.thisWeek.recoveryDays}
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
               Recovery Days
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#4f46e5' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'var(--color-link)' }}>
               {formatted.progress.sessions.completed}/{formatted.progress.sessions.planned}
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
               Sessions
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#a855f7' }}>
+            <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'var(--color-accent-violet)' }}>
               {formatted.progress.minutes.completed}
             </div>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
               Minutes
             </div>
           </div>
@@ -142,9 +142,9 @@ export default async function DashboardPage() {
         <Card title="Recent Plan Adjustments">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {changes.map((change: any) => (
-              <div key={change.id} style={{ borderLeft: '4px solid #3b82f6', paddingLeft: '1rem', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
-                <div style={{ fontWeight: 500, color: '#111827' }}>{change.reason}</div>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              <div key={change.id} style={{ borderLeft: '4px solid var(--color-info)', paddingLeft: '1rem', paddingTop: '0.5rem', paddingBottom: '0.5rem' }}>
+                <div style={{ fontWeight: 500, color: 'var(--color-text)' }}>{change.reason}</div>
+                <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem' }}>
                   {change.changesSummary}
                 </p>
                 <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
@@ -152,8 +152,8 @@ export default async function DashboardPage() {
                     fontSize: '0.75rem',
                     padding: '0.25rem 0.5rem',
                     borderRadius: '0.25rem',
-                    backgroundColor: change.material ? '#fed7aa' : '#dcfce7',
-                    color: change.material ? '#92400e' : '#166534',
+                    backgroundColor: change.material ? 'var(--color-warning-bg)' : 'var(--color-success-bg)',
+                    color: change.material ? 'var(--color-warning-text)' : 'var(--color-success-text)',
                   }}>
                     {change.material ? 'Requires Review' : 'Auto-Applied'}
                   </span>
@@ -161,8 +161,8 @@ export default async function DashboardPage() {
                     fontSize: '0.75rem',
                     padding: '0.25rem 0.5rem',
                     borderRadius: '0.25rem',
-                    backgroundColor: change.status === 'PENDING' ? '#fef3c7' : '#dcfce7',
-                    color: change.status === 'PENDING' ? '#92400e' : '#166534',
+                    backgroundColor: change.status === 'PENDING' ? 'var(--color-warning-bg)' : 'var(--color-success-bg)',
+                    color: change.status === 'PENDING' ? 'var(--color-warning-text)' : 'var(--color-success-text)',
                   }}>
                     {change.status}
                   </span>

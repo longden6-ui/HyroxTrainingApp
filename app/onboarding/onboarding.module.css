@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  background: linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%);
   padding: 2rem;
 }
 
@@ -19,13 +19,13 @@
 .header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-text);
   margin: 0;
 }
 
 .subtitle {
   font-size: 1.1rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -36,7 +36,7 @@
 }
 
 .breadcrumb a {
-  color: #667eea;
+  color: var(--color-brand);
   text-decoration: none;
   font-weight: 600;
   transition: opacity 0.2s;
@@ -49,10 +49,10 @@
 .errorBanner {
   margin-bottom: 1rem;
   padding: 1rem;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
   border-radius: 0.5rem;
-  color: #991b1b;
+  color: var(--color-error-text);
   font-size: 0.95rem;
 }
 
@@ -62,21 +62,21 @@
 }
 
 .section {
-  background: white;
+  background: var(--color-surface);
   border-radius: 0.75rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--color-brand);
 }
 
 .sectionTitle {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text);
   margin: 0 0 1.5rem 0;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .formGrid {
@@ -93,7 +93,7 @@
 .formItem label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 0.5rem;
@@ -102,19 +102,19 @@
 .input,
 .select {
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--color-border-strong);
   border-radius: 0.5rem;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.2s;
-  background-color: white;
-  color: #111827;
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-brand);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -133,13 +133,13 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
 }
 
 .nextButton {
   flex: 1;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-secondary) 100%);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -161,9 +161,9 @@
 .backButton {
   flex: 1;
   padding: 1rem;
-  background: #f3f4f6;
-  color: #111827;
-  border: 1px solid #d1d5db;
+  background: var(--color-bg-secondary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
   border-radius: 0.5rem;
   font-weight: 600;
   font-size: 1rem;
@@ -176,7 +176,7 @@
 }
 
 .backButton:hover {
-  background: #e5e7eb;
+  background: var(--color-border);
 }
 
 .stepIndicator {
@@ -193,7 +193,7 @@
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-brand-secondary) 100%);
   color: white;
   font-weight: 700;
   font-size: 1.1rem;
@@ -207,7 +207,7 @@
 .stepMeta .label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -215,7 +215,7 @@
 .stepMeta .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #111827;
+  color: var(--color-text);
 }
 
 .radioGroup {
@@ -228,18 +228,18 @@
   display: flex;
   align-items: flex-start;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-left: 4px solid #667eea;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-brand);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
-  background: white;
+  background: var(--color-surface);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .radioItem:hover {
-  border-color: #667eea;
-  background: #f9fafb;
+  border-color: var(--color-brand);
+  background: var(--color-bg);
   box-shadow: 0 2px 6px rgba(102, 126, 234, 0.15);
 }
 
@@ -266,15 +266,15 @@
   display: flex;
   align-items: flex-start;
   padding: 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .checkboxItem:hover {
-  border-color: #667eea;
-  background: #f9fafb;
+  border-color: var(--color-brand);
+  background: var(--color-bg);
 }
 
 .checkboxItem input[type='checkbox'] {
@@ -285,7 +285,7 @@
 
 .checkbox {
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: var(--color-brand);
 }
 
 .checkboxLabel {
@@ -294,12 +294,12 @@
   margin: 0;
   text-transform: none;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text);
 }
 
 .helpText {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
   margin-top: 0.5rem;
 }
 

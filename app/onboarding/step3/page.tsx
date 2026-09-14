@@ -69,7 +69,7 @@ export default function Step3Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -97,12 +97,12 @@ export default function Step3Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Your Work & Lifestyle</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Help us understand your work schedule and physical demands so we can plan training around your lifestyle.
           </p>
 
           <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
               What is your typical work pattern? *
             </p>
             <div className={styles.radioGroup}>
@@ -115,8 +115,8 @@ export default function Step3Page() {
                   onChange={(e) => setWorkPattern(e.target.value)}
                 />
                 <div className={styles.radioItem}>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Sedentary</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mostly sitting (office work, desk job)</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Sedentary</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Mostly sitting (office work, desk job)</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -128,8 +128,8 @@ export default function Step3Page() {
                   onChange={(e) => setWorkPattern(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Light</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mix of sitting and standing (retail, teaching)</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Light</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Mix of sitting and standing (retail, teaching)</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -141,8 +141,8 @@ export default function Step3Page() {
                   onChange={(e) => setWorkPattern(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Moderate</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Mostly on feet (nursing, construction)</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Moderate</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Mostly on feet (nursing, construction)</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -154,15 +154,15 @@ export default function Step3Page() {
                   onChange={(e) => setWorkPattern(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Heavy</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Physically demanding labor (trades, manual work)</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Heavy</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Physically demanding labor (trades, manual work)</p>
                 </div>
               </label>
             </div>
           </div>
 
           <div>
-            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '1rem' }}>
               What is the typical physical demand of your work? *
             </p>
             <div className={styles.radioGroup}>
@@ -175,8 +175,8 @@ export default function Step3Page() {
                   onChange={(e) => setPhysicalDemand(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Low</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Minimal physical stress or strength required</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Low</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Minimal physical stress or strength required</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -188,8 +188,8 @@ export default function Step3Page() {
                   onChange={(e) => setPhysicalDemand(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>Moderate</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Some lifting or sustained effort needed</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>Moderate</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Some lifting or sustained effort needed</p>
                 </div>
               </label>
               <label className={styles.radioItem}>
@@ -201,15 +201,15 @@ export default function Step3Page() {
                   onChange={(e) => setPhysicalDemand(e.target.value)}
                 />
                 <div>
-                  <p style={{ fontWeight: '600', color: '#111827', margin: '0 0 0.25rem 0' }}>High</p>
-                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Heavy lifting or intense physical effort daily</p>
+                  <p style={{ fontWeight: '600', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>High</p>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>Heavy lifting or intense physical effort daily</p>
                 </div>
               </label>
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>💡 Why we ask:</strong> Understanding your occupational demands helps us manage total training load and prevent overuse injuries.
             </p>
           </div>

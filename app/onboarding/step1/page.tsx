@@ -90,7 +90,7 @@ export default function Step1Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -118,7 +118,7 @@ export default function Step1Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Select Your Stations</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Tell us which HYROX stations challenge you most. We'll customize your training plan to target these weak points.
           </p>
 
@@ -172,8 +172,8 @@ export default function Step1Page() {
             </div>
           </div>
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>All 8 HYROX Stations:</strong> SkiErg, Sled Push, Sled Pull, Burpee Broad Jumps, RowErg, Farmer's Carry, Sandbag Lunges, Wall Balls
             </p>
           </div>

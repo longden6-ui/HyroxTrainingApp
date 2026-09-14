@@ -41,7 +41,7 @@
   display: inline-block;
   padding: 1rem 2rem;
   background-color: white;
-  color: #667eea;
+  color: var(--color-brand);
   text-decoration: none;
   border-radius: 4px;
   font-weight: 600;
@@ -76,7 +76,7 @@
 
 .features {
   padding: 4rem 2rem;
-  background-color: #f9f9f9;
+  background-color: var(--color-bg-secondary);
 }
 
 .features h2,
@@ -95,7 +95,7 @@
 }
 
 .feature {
-  background-color: white;
+  background-color: var(--color-surface);
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -103,17 +103,18 @@
 
 .feature h3 {
   margin-top: 0;
-  color: #667eea;
+  color: var(--color-brand);
 }
 
 .feature p {
   margin: 0.5rem 0 0 0;
   line-height: 1.6;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .about {
   padding: 4rem 2rem;
+  color: var(--color-text);
 }
 
 .about p {

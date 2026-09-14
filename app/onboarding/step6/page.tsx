@@ -82,7 +82,7 @@ export default function Step6Page() {
         </div>
         <div className={styles.content}>
           <div className={styles.section} style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-            <p style={{ color: '#6b7280' }}>Loading your previous selections...</p>
+            <p style={{ color: 'var(--color-text-secondary)' }}>Loading your previous selections...</p>
           </div>
         </div>
       </main>
@@ -110,15 +110,15 @@ export default function Step6Page() {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>When Can You Train?</h2>
-          <p style={{ marginBottom: '1.5rem', color: '#6b7280' }}>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--color-text-secondary)' }}>
             Tell us when you can train each day of the week so we can schedule sessions that fit your life.
           </p>
 
-          <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+          <div style={{ marginBottom: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: '0.5rem' }}>
               Enter how many minutes you can dedicate to training each day (0 if unavailable).
             </p>
-            <div style={{ fontSize: '1.1rem', fontWeight: '600', color: '#667eea' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--color-brand)' }}>
               Total availability per week: <strong>{totalMinutes} minutes</strong>
             </div>
           </div>
@@ -126,7 +126,7 @@ export default function Step6Page() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {DAYS.map((day, index) => (
               <div key={day} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <label style={{ width: '100px', fontWeight: '600', color: '#111827' }}>
+                <label style={{ width: '100px', fontWeight: '600', color: 'var(--color-text)' }}>
                   {DAY_LABELS[index]}
                 </label>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flex: 1 }}>
@@ -139,14 +139,14 @@ export default function Step6Page() {
                     className={styles.input}
                     style={{ flex: 1 }}
                   />
-                  <span style={{ color: '#6b7280', fontWeight: '500', minWidth: '80px' }}>minutes</span>
+                  <span style={{ color: 'var(--color-text-secondary)', fontWeight: '500', minWidth: '80px' }}>minutes</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f3f4f6', borderRadius: '0.5rem' }}>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '0.5rem' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>
               <strong>💡 Why we ask:</strong> We'll schedule your sessions within the time you've indicated as available. Sessions never get placed when you've marked 0 minutes available. [T-14, US-03]
             </p>
           </div>

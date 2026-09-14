@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ThemeToggle } from '@/src/components/theme/ThemeToggle';
 import styles from './Navigation.module.css';
 
 export default function Navigation() {
@@ -58,6 +59,7 @@ export default function Navigation() {
           {userEmail && (
             <span className={styles.userEmail}>{userEmail}</span>
           )}
+          <ThemeToggle />
           <button
             className={styles.hamburger}
             onClick={() => setIsOpen(!isOpen)}
