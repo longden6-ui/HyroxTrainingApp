@@ -1,14 +1,25 @@
 'use server';
 
 // Authentication server actions [T-11, PRD 9.6]
+import crypto from 'crypto';
+import { headers } from 'next/headers';
 import { PrismaClient } from '@prisma/client';
-import { validateSignup, validateSignin } from '../auth/schema';
+import { validateSignup, validateSignin, validatePasswordRecovery, validateResetPassword } from '../auth/schema';
 import { hashPassword, verifyPassword } from '../auth/password';
 import { createSession, clearSession } from '../auth/session';
 import { captureSignupConsents } from './consent';
 import { claimAnonymousPrediction } from './prediction';
+import { signMfaToken } from '../mfa';
+import { sendPasswordResetEmail } from '../email';
+import { validateRateLimit } from '../ratelimit';
 
 const prisma = new PrismaClient();
+
+const PASSWORD_RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+function hashResetToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
 
 export async function signup(input: unknown) {
   try {
@@ -122,7 +133,14 @@ export async function signin(input: unknown) {
         };
       }
 
-      // Create session
+      // ── MFA check ────────────────────────────────────────────────────────
+      if (athlete.mfaEnabled) {
+        const mfaToken = signMfaToken(athlete.id);
+        return { success: true, mfa_required: true, mfaToken };
+      }
+      // ────────────────────────────────────────────────────────────────────
+
+      // Create session (no MFA)
       await createSession(athlete.id, athlete.email, athlete.role);
 
       return {
@@ -147,6 +165,110 @@ export async function signin(input: unknown) {
     }
   } catch (error) {
     console.error('Signin error:', error);
+    return {
+      success: false,
+      errors: { _form: ['An error occurred. Please try again.'] },
+    };
+  }
+}
+
+export async function requestPasswordReset(input: unknown) {
+  try {
+    const validation = validatePasswordRecovery(input);
+    if (!validation.success) {
+      return {
+        success: false,
+        errors: validation.error.flatten().fieldErrors,
+      };
+    }
+
+    const { email } = validation.data;
+
+    const requestHeaders = await headers();
+    const rateLimit = validateRateLimit(requestHeaders);
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        errors: {
+          _form: [`Too many requests. Please try again in ${Math.ceil((rateLimit.resetTime - Date.now()) / 1000)} seconds.`],
+        },
+      };
+    }
+
+    const athlete = await prisma.athlete.findUnique({ where: { email } });
+
+    if (!athlete) {
+      return {
+        success: false,
+        errors: { email: ['No account found with that email'] },
+      };
+    }
+
+    const rawToken = crypto.randomBytes(32).toString('hex');
+
+    await prisma.athlete.update({
+      where: { id: athlete.id },
+      data: {
+        passwordResetTokenHash: hashResetToken(rawToken),
+        passwordResetExpiresAt: new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS),
+      },
+    });
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const resetUrl = `${appUrl}/reset-password?token=${rawToken}`;
+    await sendPasswordResetEmail(athlete.email, resetUrl);
+
+    return { success: true };
+  } catch (error) {
+    console.error('Request password reset error:', error);
+    return {
+      success: false,
+      errors: { _form: ['An error occurred. Please try again.'] },
+    };
+  }
+}
+
+export async function resetPassword(input: unknown) {
+  try {
+    const validation = validateResetPassword(input);
+    if (!validation.success) {
+      return {
+        success: false,
+        errors: validation.error.flatten().fieldErrors,
+      };
+    }
+
+    const { token, newPassword } = validation.data;
+    const tokenHash = hashResetToken(token);
+
+    const athlete = await prisma.athlete.findFirst({
+      where: {
+        passwordResetTokenHash: tokenHash,
+        passwordResetExpiresAt: { gt: new Date() },
+      },
+    });
+
+    if (!athlete) {
+      return {
+        success: false,
+        errors: { _form: ['This reset link is invalid or has expired'] },
+      };
+    }
+
+    const passwordHash = await hashPassword(newPassword);
+
+    await prisma.athlete.update({
+      where: { id: athlete.id },
+      data: {
+        passwordHash,
+        passwordResetTokenHash: null,
+        passwordResetExpiresAt: null,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Reset password error:', error);
     return {
       success: false,
       errors: { _form: ['An error occurred. Please try again.'] },

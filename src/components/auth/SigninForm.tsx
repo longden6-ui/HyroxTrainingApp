@@ -3,16 +3,20 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signin } from '@/src/lib/actions/auth';
+import MfaChallengeScreen from '@/src/components/mfa/MfaChallengeScreen';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 import styles from './auth.module.css';
 
 export function SigninForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+  // MFA state — set when signin returns mfa_required
+  const [pendingMfaToken, setPendingMfaToken] = useState<string | null>(null);
+
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -25,10 +29,14 @@ export function SigninForm() {
     setLoading(true);
     setErrors({});
 
-    const response = await signin({
-      email: formData.email,
-      password: formData.password,
-    });
+    const response = await signin({ email: formData.email, password: formData.password });
+
+    if (response.success && response.mfa_required && response.mfaToken) {
+      // Transition to MFA challenge — don't redirect yet
+      setPendingMfaToken(response.mfaToken);
+      setLoading(false);
+      return;
+    }
 
     if (response.success) {
       router.push('/dashboard');
@@ -38,6 +46,21 @@ export function SigninForm() {
     }
   };
 
+  // ── MFA challenge screen ────────────────────────────────────────────────────
+  if (pendingMfaToken) {
+    return (
+      <MfaChallengeScreen
+        mfaToken={pendingMfaToken}
+        onSuccess={() => router.push('/dashboard')}
+        onCancel={() => {
+          setPendingMfaToken(null);
+          setErrors({});
+        }}
+      />
+    );
+  }
+
+  // ── Standard login form ─────────────────────────────────────────────────────
   return (
     <div className={styles.auth_container}>
       <div className={styles.auth_card}>
@@ -79,6 +102,14 @@ export function SigninForm() {
               aria-invalid={!!errors.password}
             />
             {errors.password && <span className={styles.error_message}>{errors.password[0]}</span>}
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className={styles.link}
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', alignSelf: 'flex-end', fontSize: '0.85rem' }}
+            >
+              Forgot password?
+            </button>
           </fieldset>
 
           <button type="submit" disabled={loading} className={styles.button}>
@@ -88,13 +119,17 @@ export function SigninForm() {
 
         <div className={styles.auth_footer}>
           <p>
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <a href="/signup" className={styles.link}>
               Create one
             </a>
           </p>
         </div>
       </div>
+
+      {showForgotPassword && (
+        <ForgotPasswordModal onClose={() => setShowForgotPassword(false)} />
+      )}
     </div>
   );
 }
